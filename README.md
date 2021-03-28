@@ -16,6 +16,8 @@
 <br>
 
 ## 🗺️ About ##
+[Discord server](https://discord.gg/MEKtpUPBeU)
+
 The project is made using electron, the interaction with windows api is either done with Foreign Function Interface or with binaries compiled for this project.
 
 Being made with electron means the Chrome overhead is existent, if you have a computer with ultra low RAM settings, avoid using Hyperbar. The average ram usage is arround `100MB`
