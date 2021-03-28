@@ -16,6 +16,8 @@
 <br>
 
 ## 🗺️ About ##
+[Discord server](https://discord.gg/MEKtpUPBeU)
+
 The project is made using electron, the interaction with windows api is either done with Foreign Function Interface or with binaries compiled for this project.
 
 Being made with electron means the Chrome overhead is existent, if you have a computer with ultra low RAM settings, avoid using Hyperbar. The average ram usage is arround `100MB`
@@ -45,10 +47,10 @@ You can find your theme folder by right clicking the bar and then selecting Open
 The folder is actually located at your user folder (c:/users/<your username>/.hyperbar)<br>
 
 Every theme must follow a specific directory structure with a index.html at it's root directory.<br>
-`PS: THE THEME MUST HAVE THE CORE INDEX.JS FILE AT THE BODY END IN ORDER TO USE DEFAULT WIDGETS AND VAIRABLES`<br>
+`PS: THE THEME MUST HAVE THE CORE INDEX.JS FILE AT THE BODY END IN ORDER TO USE DEFAULT WIDGETS AND VARIABLES`<br>
 Here's a simple theme structure:
 ```
-.hyperbar/
+.hyperbar/themes
 └── Theme name/
     ├── widgets/
     │   └── widgetname/
