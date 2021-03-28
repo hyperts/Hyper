@@ -1,6 +1,15 @@
 const ffi = require('ffi-napi')
 const ref = require('ref-napi')
 const path = require('path')
+const { getPathOnUserFolder } = require(require('path').resolve(__dirname, '..', 'core/utils.js'))
+const Logger = require('@ptkdev/logger')
+const logPath = getPathOnUserFolder('logs')
+const logger = new Logger({
+  language: 'en',
+  colors: true,
+  write: true,
+  path: { debug_log: `${logPath}\\cl_debug.log`, error_log: `${logPath}\\cl_errors.log` }
+})
 
 const voidPtr = ref.refType(ref.types.void)
 const stringPtr = ref.refType(ref.types.CString)
@@ -62,11 +71,12 @@ const win32 = ffi.Library('User32', {
   IsHungAppWindow: ['bool', ['uint32']],
   RegisterWindowMessageA: ['uint', ['string']],
   RegisterShellHookWindow: ['bool', ['uint32']],
-  PeekMessageA: ['bool', ['uint32', 'uint', 'uint', 'uint']]
+  PeekMessageA: ['bool', ['uint32', 'uint', 'uint', 'uint']],
+  IsIconic: ['bool', ['uint32']]
 })
 
 // ENUMS
-const GW = {
+const GW = Object.freeze({
   HWNDFIRST: 0, // The retrieved handle identifies the window of the same type that is highest in the Z order.
   HWNDLAST: 1, // The retrieved handle identifies the window of the same type that is lowest in the Z order.
   HWNDNEXT: 2, // The retrieved handle identifies the window below the specified window in the Z order.
@@ -74,9 +84,9 @@ const GW = {
   OWNER: 4, // The retrieved handle identifies the specified window's owner window, if any.
   CHILD: 5, // The retrieved handle identifies the child window at the top of the Z order, if the specified window is a parent window otherwise, the retrieved handle is NULL.
   ENABLEDPOPUP: 6 // The retrieved handle identifies the enabled popup window owned by the specified window (the search uses the first such window found using GW_HWNDNEXT)
-}
+})
 
-const WS = {
+const WS = Object.freeze({
   BORDER: 0x00800000, // The window has a thin-line border.
   CAPTION: 0x00C00000, // The window has a title bar (includes the BORDER style).
   CHILD: 0x40000000, // The window is a child window.
@@ -102,9 +112,9 @@ const WS = {
   TILED: 0x00000000, // The window is an overlapped window. An overlapped window has a title bar and a border.
   OVERLAPPEDWINDOW: 0x00000000 | 0x00C00000 | 0x00080000 | 0x00040000 | 0x00020000 | 0x00010000, // OVERLAPPED | CAPTION | SYSMENU | THICKFRAME | MINIMIZEBOX | MAXIMIZEBOX
   TILEDWINDOW: 0x00000000 | 0x00C00000 | 0x00080000 | 0x00040000 | 0x00020000 | 0x00010000 // OVERLAPPED | CAPTION | SYSMENU | THICKFRAME | MINIMIZEBOX | MAXIMIZEBOX
-}
+})
 
-const GWL = {
+const GWL = Object.freeze({
   EXSTYLE: -20, // extended window style.
   HINSTANCE: -6, // Sets a new application instance handle.
   ID: -12, // Sets a new identifier of the child window. The window cannot be a top-level window.
@@ -112,66 +122,25 @@ const GWL = {
   USERDATA: -21, // Sets the user data associated with the window.
   WNDPROC: -4, // Sets a new address for the window procedure.
   MSGRESULT: 0 // Sets the return value of a message processed in the dialog box procedure.
-}
+})
 
-// function getWindowName( hwnd ) {
-//   let buf, name, ret, visible, hasowner, haslong, test
-//   buf = new Buffer.alloc(255)
-//   ret = win32.GetWindowTextA(hwnd, buf, 255)
-//   return ref.readCString(buf, 0)
-// }
+const SW = Object.freeze({
+  HIDE: 0,
+  SHOWNORMAL: 1,
+  SHOWMINIMIZED: 2,
+  MAXIMIZE: 3,
+  SHOWMAXIMIZED: 3,
+  SHOWNOACTIVATE: 4,
+  SHOW: 5,
+  MINIMIZE: 6,
+  SHOWMINNOACTIVE: 7,
+  SHOWNA: 8,
+  RESTORE: 9,
+  SHOWDEFAULT: 10,
+  FORCEMINIMIZE: 11
+})
 
-// const desktopWhnd = win32.GetDesktopWindow()
-// const originalTaskbar = win32.FindWindowA('Shell_TrayWnd\0', 0)
 
-// windowProc = ffi.Callback('bool', ['long', 'int32'], function(hwnd, lParam) {
-//   let buf, name, ret, visible, hasowner, haslong, test
-//   buf = new Buffer.alloc(255)
-//   ret = win32.GetWindowTextA(hwnd, buf, 255)
-//   name = ref.readCString(buf, 0)
-//   // visible = winapi.IsWindowVisible(hwnd)
-//   // hasowner = winapi.GetWindow(hwnd, 4) // GW_OWNER
-
-//   let ptr = win32.GetWindowLongPtrA(hwnd, -16)
-//   console.log("Testing window Visible Alt+TAB", name, virtualDesktop.ViewIsShownInSwitchers(hwnd) )
-//   // console.log("PTR TESTING WINDOW:", name,
-//   // "\n---Visible:", ptr & 0x10000000,
-//   // "\n---Minimize box:", ptr & 0x00020000,
-//   // "\n---Has Titlebar", ptr & 0x00C00000,
-//   // "\n------ PTR: ", ptr, "\n------ compared to", 0x10000000, 0x00020000, 0x00C00000
-//   // )
-
-//   // if (ptr == 0x00200000){
-//   //   console.log(`Window ${name} PTRA = 0x00200000`)
-//   // }
-
-//   // if (name.length > 0 && visible && hasowner == 0) {
-//   //   if (ptr == 0x00200000) {
-//   //     // console.log("\nUWP:")
-//   //   }
-//   //   else{
-//   //     currentTasks.push( name )
-//   //   }
-//     // console.log(`N: ${name} \n-----| OWN: ${hasowner} \n-----| C:`)
-//   // }
-
-// //   // test = new Buffer.alloc(32)
-// //   // test = ref.readCString(test, 0)
-// //   // iscloaked = dwmapi.DwmGetWindowAttribute(hwnd, 14)
-// //   // console.log( 0x0000001 )
-// //   // const classname = winapi.GetClassNameA(hwnd, 'ApplicationFrameWindow\0', 255)
-// //   // if ( classname > 0){
-// //     // console.log("Window", classname, name, "Is UWP")
-// //   // }
-// //   // console.log("Retrieving window information", name, name.length > 0, visible, hasowner > 0)
-// //   // if (name.length > 0 && visible && hasowner == 0) {
-// //   //   console.log(`N: ${name} \n-----| OWN: ${hasowner} \n-----| C:`)
-// //   // }
-
-//   return true
-// })
-
-// win32.EnumWindows(windowProc, 0)
 
 module.exports = {
   virtualDesktop,
