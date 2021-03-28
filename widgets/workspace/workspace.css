@@ -1,0 +1,78 @@
+:host(workspace-widget) {
+    color: var(--text);
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+}
+
+.wrapper{
+    height: 100%;
+    line-height: var(--bar-height);
+    border-radius: 0px;
+    /* padding-left: 8px;
+    padding-right: 8px; */
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: center;
+
+}
+
+/* .wrapper:hover {
+    border-radius: 4px;
+} */
+
+.one {
+    padding-left: 16px !important;
+    border-radius: 4px 0 0 4px;
+}
+
+.one.last {
+    border-radius: 4px;
+}
+
+.selector {
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: hand;
+    background: var(--secondary);
+    list-style:none;
+}
+
+.selector.active{
+    color: var(--primary);
+}
+
+.add {
+    width: 0px;
+    /* opacity: 0; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: .3s;
+    cursor: hand;
+    height: var(--bar-height);
+    background-color: var(--tertiary);
+}
+
+.wrapper:hover .add{
+    opacity: 1;
+    width: 32px;
+    color: var(--primary);
+    border-radius: 0 4px 4px 0;
+}
+
+.last {
+    padding-right: 16px !important;
+    border-radius: 0 4px 4px 0;
+}
+
+.wrapper:hover .last {
+    border-radius: 0;
+}
+
+.wrapper:hover .one.last {
+    border-radius: 4px 0 0 4px;
+}

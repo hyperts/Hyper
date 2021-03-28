@@ -1,0 +1,88 @@
+:host(spotify-player) {
+    padding-left: 1%;
+    /* padding-right: 1%; */
+    border-radius: var(--radius);
+    background: var(--secondary);
+    height: var(--bar-height);
+    line-height: var(--bar-height);
+    color: var(--text);
+    display: flex;
+    flex-direction: row;
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.wrapper {
+    max-height: var(--bar-height);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    display: flex;
+    flex-direction: row;
+}
+
+.title {
+    width: 100%;
+    display: inline-block;
+}
+
+.coverwrapper {
+    width: var(--bar-height);
+    height: var(--bar-height);
+    margin-left: 8px;
+    z-index: 999;
+}
+
+.cover {
+    height: 100%;
+    width: auto;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    /* width: 100%; */
+}
+
+
+
+.marquee {
+    width: 150px;
+    position: relative;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+}
+
+.marquee span{
+
+    position: absolute;
+    animation-delay: 5s;
+    animation-duration: 15s;
+    animation-name: marquee;
+    animation-iteration-count: infinite;
+}
+
+@keyframes marquee {
+    0%   {
+        opacity: 0;
+    }
+    10% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-100%, 0);
+        opacity: 0;
+    }
+}
+/*
+@keyframes fadeout {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes fadeback {
+    0% { opacity: 0; }
+    100%   { opacity: 1; }
+} */

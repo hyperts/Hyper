@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hyper AppDrawer</title>
+        <script>
+            initNodeRequire();
+
+            function initNodeRequire(){
+                require = require;
+                delete window.require;
+                delete window.exports;
+                delete window.module;
+            }
+        </script>
+        <link rel="stylesheet" type="text/css" href="../../index.css">
+        <link rel="stylesheet" type="text/css" href="appdrawer.css">
+    </head>
+    <body>
+        <script type="text/javascript" src="appdrawer.js"></script>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+apps:
+  Productivity:
+    icon: produc.png
+    displayIcon: true
+    applist:
+      Figma: C:\Users\teuzh\AppData\Local\Programs\Microsoft VS Code\Code.exe
+      Pomotroid: C:\Users\teuzh\AppData\Local\Programs\pomotroid\Pomotroid.exe
+      Notion: C:\Users\teuzh\AppData\Local\Programs\Notion\Notion.exe
+  Programming:
+    icon: code.png
+    displayIcon: true
+    applist:
+      VSCode: C:\Users\teuzh\AppData\Local\Programs\Microsoft VS Code\Code.exe
+      Insomnia: C:\Users\teuzh\AppData\Local\insomnia\insomnia.exe
+      Data Grip: C:\Users\teuzh\AppData\Local\JetBrains\Toolbox\apps\datagrip\ch-0\203.6682.134\bin\datagrip64.exe
+      CLion: C:\Users\teuzh\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.7148.70\bin\clion64.exe

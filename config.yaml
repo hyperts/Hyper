@@ -1,0 +1,38 @@
+widgets:
+  enabled:
+    app-drawer: false
+    clock: true
+    spotify: true
+    taskbar: true
+    tray: true
+    volume: true
+    weather: true
+    app-launcher: true
+
+general:
+  colors:
+    primary: "#000"
+    secondary: "#161616"
+    text: "#fff"
+    accent: "#3676ff"
+
+  behaviour:
+    hide-taskbar: false
+    reserve-space: false
+    dock-position: "Top" # "Top", "Bottom"
+    always-on-top: true
+
+  look-and-feel:
+    theme: 'default'
+    composition: "none" #acrylic, blurbehind or none
+    height: 32
+    vertical-margin: 8
+    horizontal-margin: 8
+    vertical-padding: 0
+    horizontal-padding: 0
+    current-theme: "default"
+
+  advanced:
+    show-before-load: false
+    show-frame: false
+    debug-mode: true

@@ -1,0 +1,46 @@
+{
+  "name": "hyperbar",
+  "version": "0.1.0",
+  "author": "Nodge",
+  "description": "Electron based taskbar replacement for windows",
+  "main": "main.js",
+  "dependencies": {
+    "@electron/remote": "^1.0.4",
+    "@ptkdev/logger": "^1.7.2",
+    "axios": "^0.21.1",
+    "chokidar": "^3.5.1",
+    "dot-prop": "^6.0.1",
+    "ewc": "^0.0.1",
+    "extract-zip": "^2.0.1",
+    "feather-icons": "^4.28.0",
+    "ffi-napi": "^4.0.1",
+    "moment": "^2.29.1",
+    "node-gyp": "^7.1.2",
+    "ref-napi": "^3.0.1",
+    "sortablejs": "^1.13.0",
+    "ws": "^7.4.4",
+    "yaml": "^1.10.2"
+  },
+  "devDependencies": {
+    "asar": "^3.0.3",
+    "electron": "^12.0.0"
+  },
+  "scripts": {
+    "start": "electron ./main.js"
+  },
+  "standard": {
+    "globals": [
+      "appRoot",
+      "HTMLElement",
+      "customElements",
+      "Config",
+      "win",
+      "sysApi",
+      "winApi",
+      "virtualDesktop",
+      "feather",
+      "reloadCss",
+      "appPath"
+    ]
+  }
+}

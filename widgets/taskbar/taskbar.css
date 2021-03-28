@@ -1,0 +1,54 @@
+:host(task-bar) {
+    display: flex;
+    flex-grow: 1;
+    width: 100%;
+    margin-right: 8px;
+    margin-left: 8px;
+    overflow: scroll;
+}
+
+:host(task-bar)::-webkit-scrollbar {
+    display: none;
+  }
+
+ul {
+    /* display: flex; */
+    display: inline;
+    flex-direction: row;
+    /* width: 100%; */
+    /* z-index: -1; */
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    height: 0;
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+
+.task {
+    text-align: center;
+    transition: .3s;
+    margin-right: 4px;
+    padding: 0px 16px;
+    width: 100px;
+    border-radius: var(--radius);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: normal;
+    font-size: .9em;
+    background-color: var(--secondary);
+    color: var(--text);
+    line-height: var(--bar-height);
+    display: inline-block;
+    cursor: hand;
+}
+
+.dragging {
+    background-color: var(--text);
+    color: var(--primary);
+}

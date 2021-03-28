@@ -1,0 +1,38 @@
+:host(weather-widget) {
+	height: var(--bar-height);
+	line-height: var(--bar-height);
+	border-radius: 4px;
+    text-align: center;
+    padding-left: 1%;
+    padding-right: 1%;
+    flex-shrink: 0;
+    color: var(--text);
+    display: flex;
+    /* margin-left: auto; */
+    background: var(--secondary);
+    border-radius: var(--radius) 0 0 var(--radius);
+}
+
+:host(weather-widget.night) {
+    background: var(--secondary);
+    /* box-shadow: 0px 2px 0px 0px #041C34; */
+}
+:host(weather-widget.snowy) {
+    background: #000000;
+    /* box-shadow: 0px 2px 0px 0px #5BAFEB; */
+}
+:host(weather-widget.rainy) {
+    background: #000000;
+    /* box-shadow: 0px 2px 0px 0px #54617A; */
+}
+
+#icon {
+    height: 22px;
+    width: 22px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#condition {
+    margin-left: 8px;
+}

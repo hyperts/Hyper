@@ -1,0 +1,19 @@
+:host(clock-widget) {
+    font-family: 'Jetbrains Mono';
+    background-color: var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding-left: 1%;
+    padding-right: 1%;
+    /* height: 100%; */
+    /* padding-left: 6px !important; */
+    /* padding-right: 6px !important; */
+    line-height: var(--bar-height);
+    color: #fff;
+    display: flex !important;
+    white-space: nowrap;
+    /* margin-left: auto !important; */
+}
+/*
+a {
+    color: #ccc;
+} */

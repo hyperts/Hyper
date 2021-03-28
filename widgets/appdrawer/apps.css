@@ -1,0 +1,44 @@
+:host(apps-widget) {
+	height: var(--bar-height);
+    display: flex;
+	line-height: var(--bar-height);
+}
+
+.app.iconless{
+    margin-left: 8px;
+    margin-right: 8px;
+    border-radius: var(--radius) !important;
+    padding-left: 8px;
+    padding-right: 8px;
+    background: var(--secondary);
+    border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.app.withicon{
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: normal;
+    margin-left: 8px;
+    border-radius: var(--radius) !important;
+    padding-left: 8px;
+    padding-right: 8px;
+    background: var(--secondary);
+    border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.app.name {
+    color: var(--text);
+}
+
+.app.wrapper {
+    background: var(--secondary);
+    border-radius: var(--radius);
+}
+
+.app.wrapper > img {
+    width: 24px !important;
+    margin-right: 8px;
+}

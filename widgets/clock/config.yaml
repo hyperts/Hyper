@@ -1,0 +1,5 @@
+locale: "pt-br"
+show-time: true
+time-format: "hh:mma"
+show-date: true
+date-format: "ddd"
