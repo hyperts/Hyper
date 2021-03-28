@@ -47,7 +47,7 @@ You can find your theme folder by right clicking the bar and then selecting Open
 The folder is actually located at your user folder (c:/users/<your username>/.hyperbar)<br>
 
 Every theme must follow a specific directory structure with a index.html at it's root directory.<br>
-`PS: THE THEME MUST HAVE THE CORE INDEX.JS FILE AT THE BODY END IN ORDER TO USE DEFAULT WIDGETS AND VAIRABLES`<br>
+`PS: THE THEME MUST HAVE THE CORE INDEX.JS FILE AT THE BODY END IN ORDER TO USE DEFAULT WIDGETS AND VARIABLES`<br>
 Here's a simple theme structure:
 ```
 .hyperbar/
