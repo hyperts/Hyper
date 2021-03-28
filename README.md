@@ -50,7 +50,7 @@ Every theme must follow a specific directory structure with a index.html at it's
 `PS: THE THEME MUST HAVE THE CORE INDEX.JS FILE AT THE BODY END IN ORDER TO USE DEFAULT WIDGETS AND VARIABLES`<br>
 Here's a simple theme structure:
 ```
-.hyperbar/
+.hyperbar/themes
 └── Theme name/
     ├── widgets/
     │   └── widgetname/
