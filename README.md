@@ -45,7 +45,13 @@ Cool things that i'm proud of:
 - [Electron](https://www.electronjs.org/)
 - [Windows win32 API](https://docs.microsoft.com/en-us/windows/win32/apiindex/windows-api-list)
 - [VirtualDesktopAccessort](https://github.com/Ciantic/VirtualDesktopAccessor)
-
+## 📌 TO-DO List ##
+- [ ] Move code to TypeScript, this is not a prototype anymore.
+- [ ] Create C++ NAPI Module to hook into shell (Electron has no idea about when a new window is open, or, closed)
+- [ ] Cleanup code, this will naturally come when migrating to TS.
+- [ ] App launcher widget
+- [ ] Visual configuration window
+- [ ] Document widget available variables ~~and protocols~~
 ## 📐 Making Themes ##
 You can find your theme folder by right clicking the bar and then selecting Open themes folder.<bR>
 The folder is actually located at your user folder (c:/users/<your username>/.hyperbar)<br>
