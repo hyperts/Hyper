@@ -1,10 +1,10 @@
 const fs = require('fs')
 const { getCurrentWindow, Menu, MenuItem, screen, app, nativeImage } = require('@electron/remote')
 const appPath = app.getAppPath()
+const { win32, virtualDesktop, ffi } = require(require('path').resolve(appPath, 'includes/sysapi.js'))
 
 const { getPathOnUserFolder } = require(require('path').resolve(appPath, 'core/utils.js'))
 const Logger = require('@ptkdev/logger')
-console.log('Path:', require('path').resolve(appPath, 'core/config.js'))
 const Config = require(require('path').resolve(appPath, 'core/config.js'))
 const feather = require('feather-icons')
 const chokidar = require('chokidar')
@@ -16,10 +16,35 @@ const logger = new Logger({
   write: true,
   path: { debug_log: `${logPath}\\cl_debug.log`, error_log: `${logPath}\\cl_errors.log` }
 })
+
 const config = new Config()
 const barElement = document.querySelector('.bar')
 const barwindow = getCurrentWindow()
 const widgets = []
+
+const tasks = {}
+logger.info('Starting windowProc', 'CORE')
+
+const windowProc = ffi.Callback('bool', ['long', 'int32'], async function (hwnd, lParam) {
+  if (virtualDesktop.ViewIsShownInSwitchers(hwnd) < 1) {
+    return true
+  }
+
+  const buf = new Buffer.alloc(1024)
+  const ret = win32.GetWindowTextW(hwnd, buf, 1024)
+  const name = buf.toString('ucs2').replace(/\0+$/, '')
+
+  tasks[hwnd] = {
+    name: name,
+    hwnd: hwnd
+  }
+
+  logger.debug('Added window ' + hwnd + ' to task list', 'CORE')
+
+  return true
+})
+
+win32.EnumWindows(windowProc, 0)
 
 // Setting root variables for the css, theme creators may need to know the bar height.
 document.documentElement.style.setProperty('--bar-height', config.get('general.look-and-feel.height') + 'px')
@@ -29,11 +54,10 @@ fs.readdir(require('path').resolve(appPath, 'widgets'), function (err, widgetLis
   if (err) { logger.error('Error while loading widget' + err); return }
 
   widgetList.forEach(widget => {
-    // widgets[widget] = require(`${appRoot}/widgets/${widget}/${widget}.js`)
+    logger.info('Loading widget ' + widget, 'CORE')
     widgets[widget] = document.createElement('script')
     widgets[widget].src = `core://widgets/${widget}/${widget}.js`
     document.body.appendChild(widgets[widget])
-    console.log('LOADED WIDGETS', widget)
   })
 })
 
@@ -102,7 +126,6 @@ menu.append(new MenuItem({
 
 function reloadCss () {
   const links = document.getElementsByTagName('link')
-  console.log(links)
   for (const cl in links) {
     const link = links[cl]
     if (link.rel === 'stylesheet') {
@@ -117,8 +140,7 @@ function reloadCss () {
 let watchDir = getPathOnUserFolder(`themes/${config.get('general.look-and-feel.theme')}`)
 watchDir = watchDir.replaceAll('\\', '/')
 
-console.log('Watching', watchDir)
-console.log()
+logger.info('Starting chokidar to watch theme directory', 'CORE')
 const watcher = chokidar.watch(watchDir, {
   ignored: function (path, stat) {
     if (path.match(/(^|[\\])\../)) { return false }
@@ -129,6 +151,6 @@ const watcher = chokidar.watch(watchDir, {
 
 watcher
   .on('change', path => {
-    console.log('shit changed')
+    logger.info('Detected CSS Change :: Reloading!', 'CORE')
     reloadCss()
   })

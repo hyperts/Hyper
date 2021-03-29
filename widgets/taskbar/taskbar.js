@@ -1,6 +1,4 @@
 const Sortable = require('sortablejs')
-const { win32, virtualDesktop, ffi } = require(require('path').resolve(appPath, 'includes/sysapi.js'))
-
 class tasker extends HTMLElement {
   constructor () {
     super()
@@ -25,44 +23,26 @@ class tasker extends HTMLElement {
     })
 
     ul.addEventListener('mousewheel', (e) => {
-      var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
+      const delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)))
       ul.scrollLeft -= (delta * 40) // Multiplied by 40
 
       e.preventDefault()
     }, false)
-    let i = 0
-    const windowProc = ffi.Callback('bool', ['long', 'int32'], function (hwnd, lParam) {
-      if (virtualDesktop.ViewIsShownInSwitchers(hwnd) < 1) {
-        return true
-      }
-
-      let buf, ret
-      buf = new Buffer.alloc(1024)
-      ret = win32.GetWindowTextW(hwnd, buf, 1024)
-      const name = buf.toString('ucs2').replace(/\0+$/, '')
-
-      console.log('Running', name)
-      console.log(i++)
-      // CONTAINER
-      const li = document.createElement('li')
-      li.classList.add('task')
-      li.id = hwnd
-
-      li.textContent = name
-
-      ul.appendChild(li)
-
-      li.draggable = true
-
-      // let hooks = hooks.CustomWndProc(hwnd, 513, )
-
-      return true
-    })
 
     shadow.appendChild(ul)
 
-    win32.EnumWindows(windowProc, 0)
+    setTimeout(() => {
+      for (const hwnd in tasks) {
+        const window = tasks[hwnd]
+
+        const li = document.createElement('li')
+        li.classList.add('task')
+        li.id = window.hwnd
+        li.textContent = window.name
+
+        ul.appendChild(li)
+      }
+    }, 5000)
   }
 }
-
 customElements.define('task-bar', tasker)
