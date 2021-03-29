@@ -22,6 +22,9 @@ The project is made using electron, the interaction with windows api is either d
 
 Being made with electron means the Chrome overhead is existent, if you have a computer with ultra low RAM settings, avoid using Hyperbar. The average ram usage is arround `100MB`
 
+### Known issues ###
+- [ ] Hyper window will not render due to windows api telling it to draw the taskbar too fast.
+
 ## ✨ Features ##
 Hyper is modular and each theme may come with new or modified modules.<br>
 Default modules:<br>
