@@ -23,8 +23,9 @@ The project is made using electron, the interaction with windows api is either d
 Being made with electron means the Chrome overhead is existent, if you have a computer with ultra low RAM settings, avoid using Hyperbar. The average ram usage is arround `100MB`
 
 ### Known issues ###
-- [ ] Hyper window will not render due to windows api telling it to draw the taskbar too fast.
-
+- [x] ~~Hyper window will not render due to windows api telling it to draw the taskbar too fast.~~
+- [ ] There's no current way of knowing about recently open windows/tasks
+<br>
 ## ✨ Features ##
 Hyper is modular and each theme may come with new or modified modules.<br>
 Default modules:<br>
@@ -68,7 +69,6 @@ Making new widgets for your themes is as simple as creating .js files and includ
 You can access two protocols from your theme:<br>
  - `theme://` Refers to the theme root directory, that is what you're going to use to load css and js files from your theme.
  - `core://` Refers to the hyperbar directory, i advice agains using the core protocol since updates may break your theme.
-
 ## 📝 License ##
 This project is licensed under GNU-GPL 3.0<br>
 What does that mean? it means you can make your own themes and even sell them but when sharing/distributing Hyperbar you must include credits and a copy of the license file with it.
