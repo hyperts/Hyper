@@ -43,8 +43,3 @@ app.on('ready', ()=>{
     }, 2000);
       
 })
-
-app.on('window-all-closed', ()=>{
-    app.quit();
-    process.exit(0);
-})

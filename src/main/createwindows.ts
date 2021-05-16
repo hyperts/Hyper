@@ -72,6 +72,14 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         console.log("Hyper loaded, showing main window")
     })
 
+    
+    windows.main.on('close', (e)=>{
+        e.preventDefault();
+        app.quit();
+        process.exit(0);
+    })
+
+
     windows.settings.on('ready-to-show', function(){
         console.log("Settings ready.")
     })
