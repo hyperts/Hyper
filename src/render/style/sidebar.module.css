@@ -1,0 +1,13 @@
+.sidebar {
+    background-color: #16161699;
+}
+
+.separator {
+    width: 100%;
+    border-color: black;
+    opacity: .4;
+}
+
+.background {
+    border-radius: .3rem 0 0 .3rem;
+}

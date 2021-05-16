@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "target": "ES2017",
+        "module": "commonjs",
+        "strict": false,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noUnusedLocals": false,
+        "noUnusedParameters": false,
+        "typeRoots": ["./src/@types", "./node_modules/@types"],
+        "jsx": "react"
+    },
+    "exclude": [
+        "dist",
+        "node_modules",
+    ]
+}

@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind screens;
+
+@layer utilities {
+    .row {
+        @apply flex flex-row items-center;
+    }
+    .col {
+        @apply flex flex-col items-center;
+    }
+}
+
+body, html {
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+}

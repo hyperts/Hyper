@@ -1,0 +1,61 @@
+@keyframes flash{
+  0%, to { opacity: 1; }
+  4% { opacity: 0; }
+  6% { opacity: .6; }
+  8% { opacity: .2; }
+  10% { opacity: .9; }
+}
+
+@keyframes float{
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+.dragger {
+    -webkit-app-region: drag
+}
+
+.lightningBolt {
+  position: absolute;
+  z-index: 3;
+  width: 70px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  position: absolute;
+  animation: flash 3s infinite, float 3s ease-in-out infinite;
+}
+
+.lightningBolt:before,
+.lightningBolt:after {
+  content: '';
+  position: absolute;
+}
+.lightningBolt:before {
+  width: 0;
+  height: 0;
+  left: -4px;
+  top: 5px;
+  border-style: solid;
+  border-width: 15px 3px 14px 60px;
+  border-color: transparent transparent #fbeb36 transparent;
+  transform: rotate(-60deg) scaleX(.5);
+}
+.lightningBolt:after {
+  width: 0;
+  height: 0;
+  left: 4px;
+  top: -10px;
+  border-style: solid;
+  border-width: 15px 3px 14px 60px;
+  border-color: transparent transparent #fbeb36 transparent;
+  transform: rotate(-60deg) scaleY(-1) scaleX(-.5);
+}
+
+*, *::after, *::before {
+	-webkit-user-select: none;
+    user-select: none;
+	-webkit-user-drag: none;
+	-webkit-app-region: no-drag;
+	cursor: default;
+}
