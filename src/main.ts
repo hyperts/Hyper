@@ -41,5 +41,5 @@ app.on('ready', ()=>{
         createWindows(windows) // Creates main app windows [Main, Settings]
         startIPC(windows) 
     }, 2000);
-      
+    
 })
