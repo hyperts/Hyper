@@ -8,7 +8,7 @@ export function createSplash(windows: {[key: string]:BrowserWindow}) {
         width: 600, 
         height: 300, 
         minimizable: false,
-        alwaysOnTop: false,
+        alwaysOnTop: true,
         thickFrame: false,
         frame: false,
         transparent: true,
