@@ -10,7 +10,7 @@ import * as objSearch from 'dot-prop'
 export class Config {
 
   public get: (configStr: string) => object|undefined;
-  public getAll: () => Array<ConfigEntry>;
+  public getAll: () => any;
   public set: (configStr: string, value: any, callback: (Error?: Error)=> void) => void;
   public save: (callback: () => void) => void;
   private path: string;
@@ -43,11 +43,7 @@ export class Config {
     }
 
     this.save = function (callback: ()=> void) {
-      const toSave = Object.assign({}, this.data)
-      delete toSave.get
-      delete toSave.save
-
-      fs.writeFileSync(this.path, toSave, 'utf8')
+      fs.writeFileSync(this.path, YAML.stringify(this.data), 'utf8')
       if (callback) { callback() }
     }
   }

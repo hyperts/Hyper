@@ -1,11 +1,9 @@
-import React, { useState } from "react";
-import ReactDOM, {componentDidMount} from "react-dom";
+import React from "react";
+import ReactDOM from "react-dom";
 import axios from 'axios';
 
 import '../style/index.css';
 import '../style/loading.module.css';
-import { render } from "preact";
-
 
 interface LoadingProps {
     

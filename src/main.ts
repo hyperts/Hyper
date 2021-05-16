@@ -1,5 +1,4 @@
 import { app, protocol } from 'electron';
-import logger from 'electron-timber';
 import path, { dirname } from 'path';
 import WidgetRepository from './shared/widget';
 import { createWindows } from './main/createwindows';
@@ -34,7 +33,7 @@ app.on('ready', ()=>{
     const widgets = new WidgetRepository();
     widgets.loadWidgetsInPaths()
 
-    logger.log("Loaded Widgets:" ,widgets.loadedWidgets)
+    console.log("Loaded Widgets:", widgets.loadedWidgets)
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D
     // creators of weather and music widgets will appreciate this.

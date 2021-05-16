@@ -2,11 +2,11 @@
     "compilerOptions": {
         "target": "ES2017",
         "module": "commonjs",
-        "strict": false,
+        "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "noUnusedLocals": false,
+        "noUnusedLocals": true,
         "noUnusedParameters": false,
         "typeRoots": ["./src/@types", "./node_modules/@types"],
         "jsx": "react"

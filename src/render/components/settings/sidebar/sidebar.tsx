@@ -1,10 +1,10 @@
 import React from "react"
-import { Config } from '../../../../shared/config';
+// import { Config } from '../../../../shared/config';
 
 import Item from './item'
 import '../../style/sidebar.module.css';
 
-const config = new Config();
+// const config = new Config();
 
 interface SidebarProps {
     onChange: (active: string)=> void;
@@ -16,31 +16,30 @@ interface SidebarStates {
 }
 
 class Sidebar extends React.Component<SidebarProps, SidebarStates> {
-    constructor(props) {
+    constructor(props: SidebarProps) {
         super(props)
-
     }
 
     private renderCategories() {
-        const categoryList = config.getAll()
+        // const categoryList = config.getAll()
 
-        return categoryList.map( (config)=>{
-            return <>
-                <span className={`text-xs text-white opacity-30 category`} >{config.name}</span>
-                <ul className={`text-white font-normal mt-3`}>
-                    {config.items.map( (item)=>{
-                        return <Item icon={item.icon} name={item.name} active={this.props.active} click={this.props.onChange} key={item.name} />
-                    })}
-                </ul>
-            </>
-        })
+        // return categoryList.map( (config)=>{
+        //     return <>
+        //         <span className={`text-xs text-white opacity-30 category`} >{config.name}</span>
+        //         <ul className={`text-white font-normal mt-3`}>
+        //             {config.items.map( (item)=>{
+        //                 return <Item icon={item.icon} name={item.name} active={this.props.active} click={this.props.onChange} key={item.name} />
+        //             })}
+        //         </ul>
+        //     </>
+        // })
     }
 
-    handlePage(item) {
+    handlePage(item: object) {
 
     }
 
-    generateNavigation(object) {
+    generateNavigation(object: object) {
 
     }
 
@@ -55,13 +54,15 @@ class Sidebar extends React.Component<SidebarProps, SidebarStates> {
                     <img src={'assets://logo.svg'} className={`w-3`} />
                     <span className={`ml-5 text-md font-light`}>Settings</span>
                 </header>
-                <span className={`text-xs text-white opacity-30 category`}>Hyper</span>
-                <ul className={`text-white font-normal mt-3`}>
-                    <Item icon={'Info'} name={'About'} active={this.props.active} click={this.props.onChange} key={'About'}/>
-                    <Item icon={'Tag'} name={'Themes'} active={this.props.active} click={this.props.onChange} key={'Themes'}/>
-                    <Item icon={'Box'} name={'Widgets'} active={this.props.active} click={this.props.onChange} key={'Widgets'}/>
-                </ul>   
-                {this.renderCategories()}
+                <div className={`flex h-full w-full overflow-y-scroll overflow-x-hidden`}>
+                    <span className={`text-xs text-white opacity-30 category`}>Hyper</span>
+                    <ul className={`text-white font-normal mt-3`}>
+                        <Item icon={'Info'} name={'About'} active={this.props.active} click={this.props.onChange} key={'About'}/>
+                        <Item icon={'Tag'} name={'Themes'} active={this.props.active} click={this.props.onChange} key={'Themes'}/>
+                        <Item icon={'Box'} name={'Widgets'} active={this.props.active} click={this.props.onChange} key={'Widgets'}/>
+                    </ul>   
+                    {this.renderCategories()}
+                </div>
             </nav>
         </>
     }

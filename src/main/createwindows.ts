@@ -1,8 +1,7 @@
 import { app, BrowserWindow, shell } from "electron";
 import ewc from 'ewc';
-import logger from 'electron-timber'
 
-export function createWindows(windows) {
+export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
   
     windows.main = new BrowserWindow({
         width: 400, 
@@ -62,21 +61,25 @@ export function createWindows(windows) {
     });
 
     windows.main.on('ready-to-show', function(){
-        windows.main.show()
-        if (windows.splash) {
-            windows.splash.destroy()
-            windows.splash = null    
+        if (windows.main) {
+            windows.main.show()
         }
+
+        if (windows.splash) {
+            windows.splash.close()   
+        }
+
+        console.log("Hyper loaded, showing main window")
     })
 
     windows.settings.on('ready-to-show', function(){
-        logger.log("Settings ready.")
+        console.log("Settings ready.")
     })
 
-    windows.settings.on('close', (e)=>{
-        e.preventDefault()
-        windows.settings.hide()
-    })
+    // windows.settings.on('close', (e)=>{
+    //     e.preventDefault()
+    //     windows.settings.hide()
+    // })
      
     
     if (app.isPackaged) { windows.main.setMenuBarVisibility(false) }

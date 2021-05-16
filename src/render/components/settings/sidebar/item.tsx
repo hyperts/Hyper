@@ -1,4 +1,4 @@
-import React, { Component, ElementType, MouseEventHandler } from 'react';
+import React, { ElementType } from 'react';
 
 import * as Icon from 'react-feather';
 
@@ -13,6 +13,7 @@ type ItemProps = {
 }
 
 function Item( {name, click, active, icon} : ItemProps) {
+    //@ts-ignore
     const Glyph : ElementType = Icon[icon]
 
     return <>
@@ -29,7 +30,7 @@ function Item( {name, click, active, icon} : ItemProps) {
             key={name}
             onClick={()=>{
                 console.log("Clicked", name)
-                click(name)
+                if (click) { click(name) }
             }}
         >
             <Glyph size={16} className={`mr-3`} key/>

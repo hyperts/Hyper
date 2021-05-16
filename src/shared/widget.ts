@@ -1,9 +1,6 @@
-import { app } from 'electron';
 import { join } from 'path';
 import { homedir } from 'os';
-import { read, readdirSync, existsSync, readFileSync } from 'fs';
-import logger from 'electron-timber';
-
+import { readdirSync, existsSync, readFileSync } from 'fs';
 class WidgetRepository {
     public loadedWidgets: [widget?: object];
 
@@ -25,21 +22,21 @@ class WidgetRepository {
     
             this.loadedWidgets.push(widgetInfo);
         } catch (err) {
-            logger.error("Error loading widget " + widgetInfo.main + " :: " + err);
+            console.error("Error loading widget " + widgetInfo.main + " :: " + err);
         }
     }
 
-    loadWidget(widget, path) {
+    loadWidget(widget: string, path: string) {
         const widgetPath = join(path, widget);
         const widgetPathPackageJson = join(widgetPath, 'package.json');
 
         if (!existsSync(widgetPath)) {
-            logger.warn(`Widget directory ${widgetPath} does not exist`);
+            console.warn(`Widget directory ${widgetPath} does not exist`);
             return;
         }
     
         if (!existsSync(widgetPathPackageJson)) {
-            logger.warn(`Widget package json ${widgetPathPackageJson} does not exist`);
+            console.warn(`Widget package json ${widgetPathPackageJson} does not exist`);
             return;
         }
     
@@ -54,7 +51,7 @@ class WidgetRepository {
     }
 
     loadWidgetsInPaths() {
-        logger.log("Loading widgets from hyper directory")
+        console.log("Loading widgets from hyper directory")
         this.widgetPaths.forEach(path => {
             const widgets = readdirSync(path);
     
@@ -65,8 +62,6 @@ class WidgetRepository {
     }
 
     get widgetPaths() {
-        const appPath = app.getAppPath();
-
         const paths = [
             join(homedir(), "./.hyperbar/widgets"),
         ];

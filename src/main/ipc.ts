@@ -1,7 +1,7 @@
-import {app, ipcMain, screen} from 'electron';
+import {app, BrowserWindow, ipcMain, screen} from 'electron';
 import ewc from 'ewc'
 
-function startIPC(windows) {
+function startIPC(windows: {[key: string]: BrowserWindow}) {
     app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') app.quit()
     })

@@ -5,11 +5,11 @@ import {ipcRenderer} from 'electron'
 
 import '../../style/titlebar.module.css'
 
-let animationId;
-let mouseX;
-let mouseY;
+let animationId: number;
+let mouseX: number;
+let mouseY: number;
 
-function onMouseDown(e) {
+function onMouseDown(e: any) {
   mouseX = e.clientX;  
   mouseY = e.clientY;
 
@@ -17,7 +17,7 @@ function onMouseDown(e) {
   requestAnimationFrame(moveWindow);
 }
 
-function onMouseUp(e) {
+function onMouseUp(e: any) {
   ipcRenderer.send('windowMoved');
   document.removeEventListener('mouseup', onMouseUp)
   cancelAnimationFrame(animationId)

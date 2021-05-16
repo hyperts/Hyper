@@ -1,10 +1,8 @@
 import { BrowserWindow } from 'electron';
 import ewc from 'ewc';
-import logger from 'electron-timber'
 
-
-export function createSplash(windows) {
-    logger.log("Starting splash screen")
+export function createSplash(windows: {[key: string]:BrowserWindow}) {
+    console.log("Starting splash screen")
 
     windows.splash = new BrowserWindow({
         width: 600, 

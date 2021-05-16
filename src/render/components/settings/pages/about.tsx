@@ -1,11 +1,7 @@
 import React from 'react';
 import '../../../style/sidebar.module.css'
 
-type Props = {
-
-}
-
-function About( ) {
+function About() {
   
     return <>
       

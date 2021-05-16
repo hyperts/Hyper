@@ -1,74 +1,87 @@
 ---
-- name: General
-  type: category
+general:
+  name: General
   items:
-  - name: Behaviour
-    description: Change how hyper reacts to your desktop.
-    icon: Monitor
-    fields:
-    - name: Hide Taskbar
-      description: Hides windows taskbar when Hyper is initialized
-      type: checkbox
-      value: true
-    - name: Reserve Space
-      description: Reserves space for Hyper, preveting non full-screen windows to
-        maximize over the bar.
-      type: checkbox
-      value: true
-    - name: Always on Top
-      description: Prevents other programs from overlaping the bar
-      type: checkbox
-      value: true
-  - name: Position
-    description: Pick spacing and position for hyper.
-    icon: Layout
-    fields:
-    - name: Dock Position
-      description: Which border of the monitor hyper should be attached to
-      type: dropdown
-      options:
-      - top
-      - bottom
-      value: top
-    - name: Vertical Margin
-      description: Vertical margin from monitor edge
-      type: number
-      value: 0
-    - name: Horizontal Margin
-      description: Horizontal margin from monitor edge
-      type: number
-      value: 0
-- name: Appearence
-  type: category
+    behaviour:
+      name: Behaviour
+      description: Change how hyper reacts to your desktop.
+      icon: Monitor
+      fields:
+        hide-taskbar:
+          name: Hide Taskbar
+          description: Hides windows taskbar when Hyper is initialized
+          type: checkbox
+          value: true
+        reserve-space:
+          name: Reserve Space
+          description: Reserves space for Hyper, preveting non full-screen windows
+            to maximize over the bar.
+          type: checkbox
+          value: true
+        always-on-top:
+          name: Always on Top
+          description: Prevents other programs from overlaping the bar
+          type: checkbox
+          value: true
+    position:
+      name: Position
+      description: Pick spacing and position for hyper.
+      icon: Layout
+      fields:
+        dock-pos:
+          name: Dock Position
+          description: Which border of the monitor hyper should be attached to
+          type: dropdown
+          options:
+          - top
+          - bottom
+          value: top
+        vertical-margin:
+          name: Vertical Margin
+          description: Vertical margin from monitor edge
+          type: number
+          value: 0
+        horizontal-margin:
+          name: Horizontal Margin
+          description: Horizontal margin from monitor edge
+          type: number
+          value: 0
+
+appearence:
+  name: Appearence
   items:
-  - name: Color
-    description: Change the global color scheme for supported themes.
-    icon: Droplet
-    fields:
-    - name: Accent
-      description: Accent color used on supported themes
-      type: color
-      value: "#f45000"
-    - name: Primary
-      description: Predominant color used on supported themes
-      type: color
-      value: "#000"
-    - name: Secondary
-      description: Secondary color used on supported themes
-      type: color
-      value: "#161616"
-  - name: Sizes
-    description: Tiny monitor? no problems, Change bar height and padding
-    icon: Crop
-    fields:
-    - name: Height
-      description: Total height of the bar
-      type: number
-      value: 32
-    - name: Padding
-      description: Internal margin (theme needs to support)
-      type: number
-      value: 4
-- name: Widgets
-  'type:': category
-  items: []
+    color:
+      name: Color
+      description: Change the global color scheme for supported themes.
+      icon: Droplet
+      fields:
+        accent:
+          name: Accent
+          description: Accent color used on supported themes
+          type: color
+          value: "#f45000"
+        primary:
+          name: Primary
+          description: Predominant color used on supported themes
+          type: color
+          value: "#000"
+        secondary:
+          name: Secondary
+          description: Secondary color used on supported themes
+          type: color
+          value: "#161616"
+    sizes:
+      name: Sizes
+      description: Tiny monitor? no problems, Change bar height and padding
+      icon: Crop
+      fields:
+        height:
+          name: Height
+          description: Total height of the bar
+          type: number
+          value: 32
+        padding:
+          name: Padding
+          description: Internal margin (theme needs to support)
+          type: number
+          value: 4

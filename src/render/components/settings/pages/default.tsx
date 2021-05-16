@@ -1,11 +1,11 @@
 import React from 'react';
 import '../../../style/sidebar.module.css'
 
-function Catalog(props) {
+function ConfigPage(props: object) {
   
     return <>
         <div> aaaaaaaaaaaa</div>
     </>
 }
 
-export default Catalog
+export default ConfigPage

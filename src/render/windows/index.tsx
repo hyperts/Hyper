@@ -10,7 +10,10 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 function App() {
  
-
+    function callIpc() {
+        openSettings()
+    }
+    
     return <div className="items-center justify-center min-h-screen space-y-5 text-white bg-bg col">
         <div className={`flex flex-col justify-center items-center`}>
             <h1 className="flex text-4xl"><Zap size={36} className={`mr-2`}/>Hyper v0.9.8</h1>
@@ -33,8 +36,4 @@ function App() {
             <button onClick={callIpc} className="px-4 py-2 font-semibold rounded bg-accent">Open Settings</button>        
         </p>
     </div>
-}
-
-function callIpc() {
-    openSettings()
 }
