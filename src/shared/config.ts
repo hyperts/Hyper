@@ -3,10 +3,6 @@ import { homedir } from 'os';
 import YAML from 'yaml'
 import * as objSearch from 'dot-prop'
 
-// Why it's a class:
-// It used to handle configs for each module
-// But now modules will inject their config options to a single file on hyperdir
-
 export class Config {
 
   public get: (configStr: string) => object|undefined;
@@ -15,13 +11,17 @@ export class Config {
   public save: (callback: () => void) => void;
   private path: string;
   private yaml: string;
-  private data: object;
+  readonly data: object|undefined;
 
-  constructor () {
+  constructor (entry?: string) {
     this.path = `${homedir()}\\.hyperbar\\config.yaml`
     this.yaml = fs.readFileSync(this.path, 'utf8').toString()
 
-    this.data = YAML.parse(this.yaml)
+    if (!entry) {
+      this.data = YAML.parse(this.yaml)
+    } else {
+      this.data = objSearch.get(YAML.parse(this.yaml), entry)
+    }
 
     this.get = function (configStr) {
       const stack = objSearch.get(this.data, configStr, undefined)
@@ -38,7 +38,9 @@ export class Config {
         if (callback) { callback(new Error(`Attempt to save invalid config option < ${configStr} >`)) }
         return
       }
-      objSearch.set(this.data, configStr, value)
+      if (this.data) {
+        objSearch.set(this.data, configStr, value)
+      }
       if (callback) { callback() }
     }
 
