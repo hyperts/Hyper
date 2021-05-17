@@ -84,7 +84,7 @@
     border-radius: 6px;
     transition: background-color .2s linear, width .2s ease-in-out;
     -webkit-transition: background-color .2s linear, width .2s ease-in-out;
-    width: 4px;
+    width: px;
     /* there must be 'right' for ps__thumb-y */
     right: 2px;
     /* please don't change 'position' */
