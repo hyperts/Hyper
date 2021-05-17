@@ -1,13 +1,23 @@
 import { app, BrowserWindow, shell } from "electron";
+import { Config } from '../shared/config';
+import { stringToHex, generateBounds } from './utils';
 import ewc from 'ewc';
+
 
 export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
   
+    const configBehaviour = new Config("general.items.behaviour.fields") 
+    const configComposition = new Config("appearence.items.composition.fields")
+    const mainBounds = generateBounds()
+
     windows.main = new BrowserWindow({
-        width: 400, 
-        height: 400, 
+        width: mainBounds.width, 
+        height: mainBounds.height, 
+        frame: false,
+        x: mainBounds.x,
+        y: mainBounds.y,
         minimizable: false,
-        alwaysOnTop: true,
+        alwaysOnTop: configBehaviour.get("always-on-top.value"),
         thickFrame: false,
         backgroundColor: '#00000000',
         hasShadow: false,
@@ -47,9 +57,20 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
     
     windows.settings.loadFile('./dist/settings.html')
 
-    ewc.setAcrylic(windows.settings, 0x16161699)
+    switch (configComposition.get("effect.value")) {
+        case "acrylic":
+            ewc.setAcrylic(windows.main, stringToHex( configComposition.get("tint.value")))
+            break;
+        case "blur":
+            ewc.setBlurBehind(windows.main, stringToHex(configComposition.get("tint.value")))
+            break;
+        case "transparent":
+            ewc.setTransparentGradient(windows.main, 0x0000000)
+            break;
+        default:
+            windows.main.setBackgroundColor( configComposition.get("tint.value") )
+    }
 
-    // Open external links in a browser instead of the electron app
     windows.main.webContents.on('new-window', function (e, url) {
         e.preventDefault()
         shell.openExternal(url)
