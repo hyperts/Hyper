@@ -38,12 +38,6 @@ function Titlebar() {
           `}
           onMouseDown={onMouseDown}
         >
-          <span 
-            className={`
-              text-white opacity-50 text-sm
-            `}
-          >
-          </span>
           <X 
             className={`
               text-gray-700 

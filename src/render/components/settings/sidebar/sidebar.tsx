@@ -19,7 +19,7 @@ class Sidebar extends Component<SidebarProps> {
       return Object.keys(config.get(`${entry}.items`)).map( (field)=>{
         const fieldData = config.get(`${entry}.items.${field}`)
 
-        return <Item name={fieldData.name} click={ this.props.onChange } icon={fieldData.icon} active={this.props.active}/>
+        return <Item name={fieldData.name} path={`${entry}.items.${field}`} click={ this.props.onChange } icon={fieldData.icon} active={this.props.active}/>
       })
     }
 
@@ -48,17 +48,17 @@ class Sidebar extends Component<SidebarProps> {
 
     render() {
         return (
-            <div className={`flex flex-row w-1/3 h-full overflow-hidden select-none px-3 py-2 relative`} id={'container'}>
+            <div className={`flex flex-row w-1/3 h-full overflow-hidden select-none px-5 py-3 relative`} id={'container'}>
                 <nav className={`w-full h-screen`}>
-                    <header className={`flex flex-row text-white mb-6`}>
+                    <header className={`flex flex-row text-white mb-8`}>
                         <img src={'assets://logo.svg'} className={`w-3`} />
                         <span className={`ml-5 text-md font-light`}>Settings</span>
                     </header>
                     <span className={`text-xs text-white opacity-30 category`}>Hyper</span>
                     <ul className={`text-white font-normal mt-3`}>
-                        <Item name={'About'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
-                        <Item name={'Themes'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
-                        <Item name={'Widgets'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
+                        <Item name={'About'} path={'hyper.about'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
+                        <Item name={'Themes'} path={'hyper.themes'} click={ this.props.onChange } icon={"Tag"} active={this.props.active}/>
+                        <Item name={'Widgets'} path={'hyper.widgets'} click={ this.props.onChange } icon={"Box"} active={this.props.active}/>
                     </ul>
                     {this.generateCategories()}
                     {this.props.children}
