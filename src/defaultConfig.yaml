@@ -31,7 +31,7 @@ general:
         dock-pos:
           name: Dock Position
           description: Which border of the monitor hyper should be attached to
-          type: dropdown
+          type: selection
           options:
           - top
           - bottom
