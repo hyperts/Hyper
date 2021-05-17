@@ -105,10 +105,12 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         console.log("Settings ready.")
     })
 
-    // windows.settings.on('close', (e)=>{
-    //     e.preventDefault()
-    //     windows.settings.hide()
-    // })
+    windows.settings.on('close', (e)=>{
+        if (windows.settings) {
+            e.preventDefault()
+            windows.settings.hide()
+        }
+    })
      
     
     if (app.isPackaged) { windows.main.setMenuBarVisibility(false) }
