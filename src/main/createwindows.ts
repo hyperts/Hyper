@@ -56,6 +56,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
     })
     
     windows.settings.loadFile('./dist/settings.html')
+    ewc.setAcrylic(windows.settings, 0x21212120)
 
     switch (configComposition.get("effect.value")) {
         case "acrylic":
