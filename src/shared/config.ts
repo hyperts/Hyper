@@ -11,7 +11,7 @@ export class Config {
   public save: (callback: () => void) => void;
   private path: string;
   private yaml: string;
-  readonly data: object|undefined;
+  readonly data: any|undefined;
 
   constructor (entry?: string) {
     this.path = `${homedir()}\\.hyperbar\\config.yaml`
