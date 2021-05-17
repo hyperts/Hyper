@@ -88,7 +88,8 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         }
 
         if (windows.splash) {
-            windows.splash.close()   
+            windows.splash.close() 
+            windows.splash = null  
         }
 
         console.log("Hyper loaded, showing main window")
@@ -107,8 +108,9 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
     })
 
     windows.settings.on('close', (e)=>{
+        e.preventDefault()
+        
         if (windows.settings) {
-            e.preventDefault()
             windows.settings.hide()
         }
     })
