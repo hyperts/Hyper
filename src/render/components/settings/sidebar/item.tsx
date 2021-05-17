@@ -2,8 +2,6 @@ import React, { ElementType } from 'react';
 
 import * as Icon from 'react-feather';
 
-import '../../../style/sidebar.module.css'
-
 type ItemProps = {
     name: string,
     active?: string,

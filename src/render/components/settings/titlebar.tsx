@@ -3,8 +3,6 @@ import {X} from 'react-feather'
 
 import {ipcRenderer} from 'electron'
 
-import '../../style/titlebar.module.css'
-
 let animationId: number;
 let mouseX: number;
 let mouseY: number;
