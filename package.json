@@ -50,6 +50,7 @@
         "electron-squirrel-startup": "^1.0.0",
         "electron-timber": "^0.5.1",
         "ewc": "^0.0.1",
+        "perfect-scrollbar": "^1.5.1",
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.9",
         "three-dots": "^0.2.1",
