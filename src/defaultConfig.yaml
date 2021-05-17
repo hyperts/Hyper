@@ -20,7 +20,7 @@ general:
           value: true
         always-on-top:
           name: Always on Top
-          description: Prevents other programs from overlaping the bar
+          description: Prevents other programs from overlaping the bar (Disabling this also hides the window when pressing the show desktop button)
           type: checkbox
           value: true
     position:
@@ -70,6 +70,27 @@ appearence:
           description: Secondary color used on supported themes
           type: color
           value: "#161616"
+    composition:
+        name: Composition
+        description: Change the composition effect behind the main bar
+        icon: Codesandbox
+        fields:
+            effect:
+              name: Composition Effect
+              description: The desired effect
+              type: selection
+              options:
+                - acrylic
+                - blur
+                - transparent
+                - none
+              value: acrylic
+            tint:
+              name: Color tint
+              description: Color tinted to composition effect
+              type: color
+              value: "#21212120"
+          
     sizes:
       name: Sizes
       description: Tiny monitor? no problems, Change bar height and padding
