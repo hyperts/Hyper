@@ -5,7 +5,7 @@ import * as objSearch from 'dot-prop'
 
 export class Config {
 
-  public get: (configStr: string) => object|any;
+  public get: (configStr: string) => ConfigEntry|any;
   public getAll: () => any;
   public set: (configStr: string, value: any, callback: (Error?: Error)=> void) => void;
   public save: (callback: () => void) => void;
