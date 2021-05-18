@@ -23,6 +23,11 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     ipcMain.on('windowMoved', () => {
     
     })
+
+    ipcMain.on('refreshApp', () => {
+        app.relaunch()
+        app.exit()
+    })
 }
 
 export default startIPC;
