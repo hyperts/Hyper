@@ -33,6 +33,8 @@ function Input({ path, value, type, options, change }: InputProps) {
                 </>
             case "number":
                 break;
+            case "selection":
+                break;
             default:
                 return <div> 😞 Field type not recognized </div>
         }
