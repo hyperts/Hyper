@@ -33,13 +33,10 @@ export class Config {
     }
 
     this.set = function (configStr, value, callback) {
-      const line = objSearch.get(this.data, configStr, null)
-      if (!line) {
-        if (callback) { callback(new Error(`Attempt to save invalid config option < ${configStr} >`)) }
-        return
-      }
       if (this.data) {
-        objSearch.set(this.data, configStr, value)
+        objSearch.set(this.data, `${configStr}.value`, value)
+      } else {
+        callback(new Error(`No data found for < ${configStr} >`))
       }
       if (callback) { callback() }
     }
