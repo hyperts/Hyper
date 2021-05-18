@@ -21,7 +21,7 @@ function ConfigPage( {path, change}: PageProps ) {
                 <div className={`mt-8`}>
                     <h4 className={`font-bold`}> {fieldData.name} </h4>
                     <p className={`text-xs text-gray-400`}> {fieldData.description} </p>
-                    <Input path={`${path}.fields.${field}`} type={fieldData.type} value={fieldData.value} change={change}/>
+                    <Input path={`${path}.fields.${field}`} type={fieldData.type} value={fieldData.value} change={change} options={fieldData.options}/>
                 </div>
             </>
         })
