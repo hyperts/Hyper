@@ -1,5 +1,5 @@
 import { Config } from '../../../shared/config';
-import React, { useState } from 'react';
+import React from 'react';
 
 import '../../style/input.module.css'
 
@@ -14,7 +14,6 @@ type InputProps = {
 const config = new Config()
 
 function Input({ path, value, type, options, change }: InputProps) {
-    const [field, setField] = useState()
 
     function applyChange(newValue: any) {
         config.set(path, newValue, (Err) => console.log)
@@ -106,7 +105,6 @@ function Input({ path, value, type, options, change }: InputProps) {
                                         onClick={()=>{
                                             //@ts-ignore // I'm not doing type swap, sorry.
                                             document.getElementById(path)?.innerText = option
-                                            setField(option)
                                             applyChange(option)
                                         }}>{option}</a></li>
                                     }
