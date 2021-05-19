@@ -5,7 +5,7 @@ const homePath : String = homedir()
 let firstRun = false
 
 if ( existsSync(`${homePath}\\.hyperbar`) ) {
-    console.log("Found hyper directoy on user home folder",  `${homePath}\\.hyperbar`)
+    console.log("Found hyper directory on user home folder",  `${homePath}\\.hyperbar`)
 } else {
     console.log("First run detected! Creating hyper directory on", `${homePath}\\.hyperbar`)
     mkdirSync(`${homePath}\\.hyperbar`)
