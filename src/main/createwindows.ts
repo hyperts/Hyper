@@ -114,9 +114,11 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
         windows.settings.on('ready-to-show', function(){
             console.log("Settings ready.")
         })
-    
-        windows.settings.on('close', ()=>{
-           windows.setings = null
+        
+        windows.settings.on('close', (e)=>{
+          delete windows.settings
         })
-    }   
+    } else {
+        console.log("Settings window alredy exists", windows.settings)
+    }
 }
