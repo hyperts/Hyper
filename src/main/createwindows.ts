@@ -34,29 +34,8 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
 
     windows.main.loadFile('./dist/index.html')
 
-    windows.settings = new BrowserWindow({
-        width: 900, 
-        height: 500, 
-        show: false, 
-        frame: false,
-        minimizable: true,
-        thickFrame: false,
-        hasShadow: false,
-        backgroundColor: '#00000000',
-        resizable: true,
-        minWidth: 800,
-        minHeight: 500,
-        skipTaskbar: false,
-        focusable: true,
-        fullscreenable: false,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-        }
-    })
-    
-    windows.settings.loadFile('./dist/settings.html')
-    ewc.setAcrylic(windows.settings, 0x21212120)
+    // TODO: Use inversion of control to spawn widget windows on this shit?
+    // That is a maybe at best, since i would also like to allow people to only spawn windows when needed.
 
     switch (configComposition.get("effect.value")) {
         case "acrylic":
@@ -73,11 +52,6 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
     }
 
     windows.main.webContents.on('new-window', function (e, url) {
-        e.preventDefault()
-        shell.openExternal(url)
-    });
-
-    windows.settings.webContents.on('new-window', function (e, url) {
         e.preventDefault()
         shell.openExternal(url)
     });
@@ -100,21 +74,49 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         e.preventDefault();
         app.quit();
         process.exit(0);
-    })
-
-
-    windows.settings.on('ready-to-show', function(){
-        console.log("Settings ready.")
-    })
-
-    windows.settings.on('close', (e)=>{
-        e.preventDefault()
-        
-        if (windows.settings) {
-            windows.settings.hide()
-        }
-    })
-     
+    })     
     
     if (app.isPackaged) { windows.main.setMenuBarVisibility(false) }
+}
+
+export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null }) {
+    if (!windows.settings) {
+        windows.settings = new BrowserWindow({
+            width: 900, 
+            height: 500, 
+            show: true, 
+            frame: false,
+            minimizable: true,
+            thickFrame: false,
+            hasShadow: false,
+            backgroundColor: '#00000000',
+            resizable: true,
+            minWidth: 800,
+            minHeight: 500,
+            skipTaskbar: false,
+            focusable: true,
+            fullscreenable: false,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+            }
+        })
+        
+        
+        windows.settings.webContents.on('new-window', function (e, url) {
+            e.preventDefault()
+            shell.openExternal(url)
+        });
+        
+        windows.settings.loadFile('./dist/settings.html')
+        ewc.setAcrylic(windows.settings, 0x21212120)
+    
+        windows.settings.on('ready-to-show', function(){
+            console.log("Settings ready.")
+        })
+    
+        windows.settings.on('close', ()=>{
+           windows.setings = null
+        })
+    }   
 }

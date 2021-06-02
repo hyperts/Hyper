@@ -47,6 +47,7 @@ function Titlebar() {
               transition-all duration-300
               `} 
             size={24}
+            onClick={ ()=>{ ipcRenderer.send('closeSettings') } }
           />
 
         </div>

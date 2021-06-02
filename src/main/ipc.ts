@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain, screen} from 'electron';
-import ewc from 'ewc'
+import { createSettingsWindow } from './createwindows'
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
     app.on('window-all-closed', () => {
@@ -7,8 +7,13 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     })
     
     ipcMain.on('openSettings', () => {
-        windows.settings.show();
-        ewc.setAcrylic(windows.settings, 0x0000000)
+        console.log("Requesting to open settings window.")
+        createSettingsWindow(windows)
+    })
+
+    ipcMain.on('closeSettings', () => {
+        console.log("Closing settings window")
+        windows?.settings?.close()
     })
     
     ipcMain.on('updateComposition', (_, composition) => {
