@@ -16,7 +16,7 @@
 <br>
 
 ## 🗺️ About ##
-[Discord server](https://discord.gg/MEKtpUPBeU)
+[Discord server](https://discord.gg/e43unTHcAk)
 
 The project is made using electron, the interaction with windows api is either done with Foreign Function Interface or with binaries compiled for this project.
 
