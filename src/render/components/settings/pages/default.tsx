@@ -51,7 +51,7 @@ function ConfigPage( {path, change}: PageProps ) {
             <div className={`mb-4 text-white`}>
                 <h3 className={`text-2xl text-bold flex flex-row items-center`}><Glyph size={22} className={`mr-3`} key/> {name}</h3>
                 <p className={`text-xs mt-1 font-light text-gray-300`}>{description}</p>
-                <div className={`flex flex-col w-full h-full overflow-hidden mt-2`}>
+                <div className={`flex flex-col w-full mt-2`}>
                     {generateFields(fields)}
                 </div>
             </div>

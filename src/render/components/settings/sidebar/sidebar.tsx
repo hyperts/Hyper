@@ -48,7 +48,7 @@ class Sidebar extends Component<SidebarProps> {
 
     render() {
         return (
-            <div className={`flex flex-row w-1/3 h-full overflow-hidden select-none px-5 py-3 relative`} id={'container'}>
+            <div className={`flex flex-row w-1/3 h-full overflow-hidden select-none px-5 py-3 relative pb-12`} id={'container'}>
                 <nav className={`w-full h-screen`}>
                     <header className={`flex flex-row text-white mb-8`}>
                         <img src={'assets://logo.svg'} className={`w-3`} />
@@ -57,8 +57,8 @@ class Sidebar extends Component<SidebarProps> {
                     <span className={`text-xs text-white opacity-30 category`}>Hyper</span>
                     <ul className={`text-white font-normal mt-3`}>
                         <Item name={'About'} path={'hyper.about'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
-                        <Item name={'Themes'} path={'hyper.themes'} click={ this.props.onChange } icon={"Tag"} active={this.props.active}/>
-                        <Item name={'Widgets'} path={'hyper.widgets'} click={ this.props.onChange } icon={"Box"} active={this.props.active}/>
+                        {/* <Item name={'Themes'} path={'hyper.themes'} click={ this.props.onChange } icon={"Tag"} active={this.props.active}/>
+                        <Item name={'Widgets'} path={'hyper.widgets'} click={ this.props.onChange } icon={"Box"} active={this.props.active}/> */}
                     </ul>
                     {this.generateCategories()}
                     {this.props.children}
