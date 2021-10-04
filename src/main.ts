@@ -3,7 +3,7 @@ import path, { dirname } from 'path';
 import WidgetRepository from './shared/widget';
 import { createWindows } from './main/createwindows';
 import startIPC from './main/ipc';
-import { createSplash } from './main/splashscreen';
+import { createSplash } from './main/createwindows';
 
 import './main/checkdir';
 
