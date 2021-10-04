@@ -8,3 +8,4 @@ dist/*.js.map
 yarn.lock
 node_modules/
 out/
+package-lock.json
