@@ -60,19 +60,21 @@ export class Config {
     }
 
     this.insert = function( category,{key, name, description, icon} ){
-      if (!this.data[category]) {
-        this.data[category] = {
+      const categoryKey = category.toLocaleLowerCase()
+
+      if (!this.data[categoryKey]) {
+        this.data[categoryKey] = {
           name: category
         }
       }
-      if (!this.data[category].items){
-        this.data[category].items = {}
+      if (!this.data[categoryKey].items){
+        this.data[categoryKey].items = {}
       }
-      if (! this.data[category].items[key]) {
-        this.data[category].items[key] = {}
+      if (! this.data[categoryKey].items[key]) {
+        this.data[categoryKey].items[key] = {}
       }
 
-      this.data[category].items[key] = {
+      this.data[categoryKey].items[key] = {
         name,
         description,
         icon,
@@ -81,17 +83,19 @@ export class Config {
     }
 
     this.addField = function(category, itemKey, {key, name, description, type, value, options}) {
-      if (!this.data[category].items[itemKey]) {
+      const categoryKey = category.toLocaleLowerCase()
+
+      if (!this.data[categoryKey].items[itemKey]) {
         return
       }
 
-      if (!this.data[category].items[itemKey].fields) {
-        this.data[category].items[itemKey].fields = {
+      if (!this.data[categoryKey].items[itemKey].fields) {
+        this.data[categoryKey].items[itemKey].fields = {
           
         }
       }
 
-      this.data[category].items[itemKey].fields[key] = {
+      this.data[categoryKey].items[itemKey].fields[key] = {
         name,
         description,
         type,
