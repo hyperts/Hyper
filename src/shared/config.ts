@@ -3,12 +3,30 @@ import { homedir } from 'os';
 import YAML from 'yaml'
 import * as objSearch from 'dot-prop'
 
+export type ConfigEntry = {
+  key: string,
+  name: string,
+  description: string,
+  icon?: string,
+}
+
+export type ConfigEntryField = {
+  key: string,
+  name: string,
+  description: string,
+  type: string,
+  options?: string[]
+  value: any,
+}
+
 export class Config {
 
   public get: (configStr: string) => ConfigEntry|any;
   public getAll: () => any;
   public set: (configStr: string, value: any, callback: (Error?: Error)=> void) => void;
   public save: (callback: () => void) => void;
+  public insert: (category:string, data: ConfigEntry) => void;
+  public addField: (category:string, itemKey:string, data: ConfigEntryField) => void;
   private path: string;
   private yaml: string;
   readonly data: any|undefined;
@@ -39,6 +57,47 @@ export class Config {
         callback(new Error(`No data found for < ${configStr} >`))
       }
       if (callback) { callback() }
+    }
+
+    this.insert = function( category,{key, name, description, icon} ){
+      if (!this.data[category]) {
+        this.data[category] = {
+          name: category
+        }
+      }
+      if (!this.data[category].items){
+        this.data[category].items = {}
+      }
+      if (! this.data[category].items[key]) {
+        this.data[category].items[key] = {}
+      }
+
+      this.data[category].items[key] = {
+        name,
+        description,
+        icon,
+      }
+
+    }
+
+    this.addField = function(category, itemKey, {key, name, description, type, value, options}) {
+      if (!this.data[category].items[itemKey]) {
+        return
+      }
+
+      if (!this.data[category].items[itemKey].fields) {
+        this.data[category].items[itemKey].fields = {
+          
+        }
+      }
+
+      this.data[category].items[itemKey].fields[key] = {
+        name,
+        description,
+        type,
+        value,
+        options
+      }
     }
 
     this.save = function (callback: ()=> void) {
