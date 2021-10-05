@@ -106,3 +106,15 @@ appearence:
           description: Internal margin (theme needs to support)
           type: number
           value: 4
+    theme:
+      name: Theme
+      description: Theming options
+      icon: Paperclip
+      fields:
+        selected:
+          name: Active Theme
+          description: Selects the active theme
+          type: selection
+          options:
+            - default
+          value: default
