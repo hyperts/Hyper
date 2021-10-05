@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import axios from 'axios';
 
 import '../style/index.css';
+import '../style/loading.css'
 interface LoadingProps {
     
 }
