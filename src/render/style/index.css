@@ -13,6 +13,6 @@
 }
 
 body, html {
-    background: transparent;
+    background: transparent !important;
     font-family: 'Montserrat', sans-serif;
 }

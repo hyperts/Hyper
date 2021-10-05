@@ -1,13 +1,14 @@
 import { app, protocol } from 'electron';
 import path, { dirname } from 'path';
 import WidgetRepository from './shared/widget';
+import { homedir } from 'os';
 import { createWindows } from './main/createwindows';
 import startIPC from './main/ipc';
 import { createSplash } from './main/createwindows';
 
 import './main/checkdir';
 
-let windows = {}
+export let windows = {}
 
 
 if (!app.isPackaged) require('electron-reload')(__dirname, {
@@ -25,15 +26,18 @@ app.on('ready', ()=>{
     
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
-        callback({ path: path.normalize(`${__dirname}/assets/${url}`) })
+        console.log("Requesting theme protocol", `${homedir()}/.hyperbar/themes${url}`)
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes${url}`) })
     })    
-    
+
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
     const widgets = new WidgetRepository();
     widgets.loadWidgetsInPaths()
 
-    console.log("Loaded Widgets:", widgets.loadedWidgets)
+    widgets.loadedWidgets.forEach( widget => {
+        console.log("Loaded widget:", widget?.name, "Version:", widget?.version)
+    })
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D
     // creators of weather and music widgets will appreciate this.

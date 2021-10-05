@@ -8,8 +8,8 @@ import Sidebar from '../components/settings/sidebar/sidebar';
 import RefreshPrompt from '../components/settings/refreshPrompt';
 
 import About from '../components/settings/pages/about';
-import Themes from '../components/settings/pages/themes';
-import Widgets from '../components/settings/pages/widgets';
+// import Themes from '../components/settings/pages/themes';
+// import Widgets from '../components/settings/pages/widgets';
 import Dynamic from '../components/settings/pages/default';
 
 ReactDOM.render(<App />, document.getElementById('root'))
@@ -31,10 +31,10 @@ function App() {
             case 'hyper.about':
                 return <About />
                 break;
-            case 'hyper.themes':
-                return <Themes />
-            case 'hyper.about.widget':
-                return <Widgets />
+            // case 'hyper.themes':
+            //     return <Themes />
+            // case 'hyper.about.widget':
+                // return <Widgets />
             default:
                 return <Dynamic path={active} change={settingChanged}/>
         }
