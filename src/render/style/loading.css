@@ -17,7 +17,7 @@
 
 .lightningBolt {
   position: absolute;
-  z-index: 3;
+  z-index: 99;
   width: 70px;
   margin: 0 auto;
   left: 0;
