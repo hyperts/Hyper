@@ -1,4 +1,4 @@
-import {app, BrowserWindow, ipcMain, screen} from 'electron';
+import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron';
 import { createSettingsWindow } from './createwindows'
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
@@ -20,7 +20,7 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     
     })
     
-    ipcMain.on('windowMoving', (e, {mouseX, mouseY}) => {
+    ipcMain.on('windowMoving', (e, {mouseX, mouseY}: {mouseX: number, mouseY:number} ) => {
         const { x, y } = screen.getCursorScreenPoint()
         windows.settings.setPosition(x - mouseX, y - mouseY)
     });
@@ -32,6 +32,35 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     ipcMain.on('refreshApp', () => {
         app.relaunch()
         app.exit()
+    })
+
+    ipcMain.on('show-context-menu', (event) => {
+        const template = [
+            {
+              label: 'Restart Hyper',
+                click: () => {
+                    app.relaunch()
+                    app.exit()
+                }
+            },
+            { label: 'Close Hyper',
+                click: () => {
+                    app.quit()
+                }
+            },
+            { type: 'separator' },
+            { 
+                label: 'Open Settings',
+                click: () => {
+                    createSettingsWindow(windows)
+                }
+            }
+            
+          ]
+          //@ts-ignore
+          const menu = Menu.buildFromTemplate(template)
+          //@ts-ignore
+          menu.popup(BrowserWindow.fromWebContents(event.sender))
     })
 }
 
