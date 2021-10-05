@@ -13,11 +13,14 @@ export function loadWidgets() {
       config:  new Config(),
       ipc: ipcRenderer,
       menu: Menu,
-      window: window
+      window: window,
+      icons: feather
   })
   })
-  feather.replace()
+  
 }
+
+console.log("Feather:", feather)
 
 export function loadTheme() {
   const themeConfig = new Config('appearence.items.theme.fields.selected')
