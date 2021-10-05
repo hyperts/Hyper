@@ -1,28 +1,41 @@
 import { join } from 'path';
 import { homedir } from 'os';
 import { readdirSync, existsSync, readFileSync } from 'fs';
+import { Config } from '../shared/config';
+
 class WidgetRepository {
-    public loadedWidgets: [widget?: object];
+    public loadedWidgets: [widget?: {name:string, main?: string, renderer?: string, version: string, widgetPath?: string, file?: string, run?: any}];
+    private isRenderer: boolean;
 
     constructor() {
         this.loadedWidgets = [];
+        this.isRenderer = false
     }
 
     getWidgetContext() {
-        // Inject specific winapi + hyper api methods to default context on widget
+        if (!this.isRenderer) {
+            return {
+                config:  new Config()
+            }
+        }
     }
 
-    requireWidget(widgetInfo: {main: string, renderer: string, version: string, name: string}) {
+    requireWidget(widgetInfo: {file: string, version: string, name: string, run?: any}) {
         try {
-            const widgetObject = require(widgetInfo.main);
+            const widgetObject = require(widgetInfo.file);
     
             if (widgetObject.default) {
-                widgetObject.default(this.getWidgetContext());
+                widgetObject.default.bind(this.getWidgetContext());
+                widgetInfo.run = widgetObject.default
             }
-    
+
             this.loadedWidgets.push(widgetInfo);
+            
+            if (!this.isRenderer) {
+                widgetObject.default(this.getWidgetContext())
+            }
         } catch (err) {
-            console.error("Error loading widget " + widgetInfo.main + " :: " + err);
+            console.error("Error loading widget " + widgetInfo.file + " :: " + err);
         }
     }
 
@@ -34,23 +47,26 @@ class WidgetRepository {
             console.warn(`Widget directory ${widgetPath} does not exist`);
             return;
         }
-    
+
         if (!existsSync(widgetPathPackageJson)) {
             console.warn(`Widget package json ${widgetPathPackageJson} does not exist`);
             return;
         }
-    
+
         let widgetInfo = JSON.parse( readFileSync(widgetPathPackageJson).toString() );
         widgetInfo = Object.assign(widgetInfo, {
             widgetPath,
-            renderer: `widgets://${widgetInfo.name}/${widgetInfo.renderer}`,
-            main: join(widgetPath, widgetInfo.main),
+            file: join(widgetPath, this.isRenderer ? widgetInfo.renderer : widgetInfo.main)
         })
         
         this.requireWidget(widgetInfo);
     }
 
-    loadWidgetsInPaths() {
+    loadWidgetsInPaths(isRenderer?: boolean) {
+        this.isRenderer = isRenderer ?? false
+        // TODO: Load default widgets from hyper repository
+        console.log("Loading default widgets")
+
         console.log("Loading widgets from hyper directory")
         this.widgetPaths.forEach(path => {
             const widgets = readdirSync(path);
