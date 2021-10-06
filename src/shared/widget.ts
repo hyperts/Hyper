@@ -2,7 +2,6 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { readdirSync, existsSync, readFileSync } from 'fs';
 import { Config } from '../shared/config';
-
 class WidgetRepository {
     public loadedWidgets: [widget?: {name:string, main?: string, renderer?: string, version: string, widgetPath?: string, file?: string, run?: any}];
     private isRenderer: boolean;
@@ -14,28 +13,43 @@ class WidgetRepository {
 
     getWidgetContext() {
         if (!this.isRenderer) {
+            const electron = require('electron')
             return {
-                config:  new Config()
+                config:  new Config(),
+                Menu: electron.Menu,
+                api: {
+                    quit: electron.app.quit,
+                    relaunch: electron.app.relaunch,
+                    show: electron.app.show,
+                    ipcMain:  electron.ipcMain,
+                    browserWindow: electron.BrowserWindow,
+                    windows: require('../main').windows
+                }
             }
+        } else {
+            const electron = require('electron')
+
+            return {
+                config: new Config(),
+                api: {
+                    ipcRenderer: electron.ipcRenderer,
+                    icons: require('feather-icons')
+                },
+                body: document.getElementById('hyperbar')
+            }
+
         }
     }
 
-    requireWidget(widgetInfo: {file: string, version: string, name: string, run?: any}) {
+    requireWidget(widgetInfo: {file: string, version: string, name: string}) {
         try {
             const widgetObject = require(widgetInfo.file);
-    
-            if (widgetObject.default) {
-                widgetObject.default.bind(this.getWidgetContext());
-                widgetInfo.run = widgetObject.default
-            }
-
             this.loadedWidgets.push(widgetInfo);
+
+            widgetObject.default(this.getWidgetContext())
             
-            if (!this.isRenderer) {
-                widgetObject.default(this.getWidgetContext())
-            }
         } catch (err) {
-            console.error("Error loading widget " + widgetInfo.file + " :: " + err);
+            console.error(`[WIDGET] [${widgetInfo.file}] :: ${err}`);
         }
     }
 
@@ -44,12 +58,12 @@ class WidgetRepository {
         const widgetPathPackageJson = join(widgetPath, 'package.json');
 
         if (!existsSync(widgetPath)) {
-            console.warn(`Widget directory ${widgetPath} does not exist`);
+            console.warn(`[WIDGET] [${widgetPath}] :: path is invalid`);
             return;
         }
 
         if (!existsSync(widgetPathPackageJson)) {
-            console.warn(`Widget package json ${widgetPathPackageJson} does not exist`);
+            console.warn(`[WIDGET] [${widgetPath}] :: ${widgetPathPackageJson} does not exist`);
             return;
         }
 
@@ -64,10 +78,9 @@ class WidgetRepository {
 
     loadWidgetsInPaths(isRenderer?: boolean) {
         this.isRenderer = isRenderer ?? false
+        // TODO: Detect first run
         // TODO: Load default widgets from hyper repository
-        console.log("Loading default widgets")
-
-        console.log("Loading widgets from hyper directory")
+        
         this.widgetPaths.forEach(path => {
             const widgets = readdirSync(path);
     
