@@ -1,26 +1,16 @@
 import WidgetRepository from '../shared/widget'
 import { Config } from '../shared/config'
-import feather from 'feather-icons'
-import {ipcRenderer, Menu} from 'electron'
+
+const configSizes = new Config("appearence.items.sizes.fields")
+
+document.documentElement.style.setProperty('--barsize', configSizes.get("height.value")+'px')
+document.documentElement.style.setProperty('--padding', configSizes.get("padding.value")+'px')
 
 export function loadWidgets() {
   const widgetController = new WidgetRepository()
-
   widgetController.loadWidgetsInPaths(true)
-
-  widgetController.loadedWidgets.forEach(widget => {
-    widget?.run( {
-      config:  new Config(),
-      ipc: ipcRenderer,
-      menu: Menu,
-      window: window,
-      icons: feather
-  })
-  })
-  
 }
 
-console.log("Feather:", feather)
 
 export function loadTheme() {
   const themeConfig = new Config('appearence.items.theme.fields.selected')
@@ -32,3 +22,13 @@ export function loadTheme() {
   document.head.appendChild(style)
 
 }
+
+setTimeout(() =>{
+  const hyperbody = document.getElementById("hyperbar")
+
+  if (hyperbody) {
+    hyperbody.style.overflowY = "hidden"
+    hyperbody.style.overflowX = "hidden"
+    hyperbody.style.height = configSizes.get("height.value") + 'px'
+  }
+}, 100)
