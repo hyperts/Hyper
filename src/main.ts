@@ -8,7 +8,7 @@ import { createSplash } from './main/createwindows';
 
 import './main/checkdir';
 
-export let windows = {}
+export const windows = {}
 
 
 if (!app.isPackaged) require('electron-reload')(__dirname, {
@@ -20,13 +20,11 @@ if (!app.isPackaged) require('electron-reload')(__dirname, {
 app.on('ready', ()=>{
     protocol.registerFileProtocol('assets', (request, callback) => {
         const url = request.url.substr(9)
-        console.log("Trying to access assets protoctol", url, path.normalize(`${__dirname}/assets/${url}`))
         callback({ path: path.normalize(`${__dirname}/assets/${url}`) })
     })   
     
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
-        console.log("Requesting theme protocol", `${homedir()}/.hyperbar/themes${url}`)
         callback({ path: path.normalize(`${homedir()}/.hyperbar/themes${url}`) })
     })    
 
@@ -36,7 +34,7 @@ app.on('ready', ()=>{
     widgets.loadWidgetsInPaths()
 
     widgets.loadedWidgets.forEach( widget => {
-        console.log("Loaded widget:", widget?.name, "Version:", widget?.version)
+        console.log(`[WIDGET] Loaded: ${widget?.name} -> Version: ${widget?.version}`)
     })
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D

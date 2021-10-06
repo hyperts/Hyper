@@ -18,5 +18,5 @@ if ( existsSync(`${homePath}\\.hyperbar`) ) {
 
 if (firstRun || !existsSync(`${homePath}\\.hyperbar\\config.yaml`)) {
     console.log("Config file not found: Creating base config file on home directory")
-    writeFileSync(`${homePath}\\.hyperbar\\config.yaml`, readFileSync('./src/defaultConfig.yaml').toString())
+    writeFileSync(`${homePath}\\.hyperbar\\config.yaml`, readFileSync(`${__dirname}/assets/defaultConfig.yaml`).toString())
 }

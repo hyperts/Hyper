@@ -66,7 +66,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
             windows.splash = null  
         }
 
-        console.log("Hyper loaded, showing main window")
+        console.log("[MAIN] Hyper loaded")
     })
 
     
@@ -80,7 +80,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
 }
 
 export function createSplash(windows: {[key: string]:BrowserWindow}) {
-    console.log("Starting splash screen")
+    console.log("[WINDOW] Creating load screen")
 
     windows.splash = new BrowserWindow({
         width: 600, 
@@ -139,13 +139,12 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
         ewc.setAcrylic(windows.settings, 0x21212120)
     
         windows.settings.on('ready-to-show', function(){
-            console.log("Settings ready.")
+            console.log("[WINDOW] Settings: Ready")
         })
         
         windows.settings.on('close', (e)=>{
           delete windows.settings
         })
     } else {
-        console.log("Settings window alredy exists", windows.settings)
     }
 }

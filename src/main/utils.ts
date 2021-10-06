@@ -10,26 +10,25 @@ export function generateBounds() {
     const configDock = new Config("general.items.position.fields")
 
     const { width, height } = screen.getPrimaryDisplay().workAreaSize
-    console.log("Screen size:", width, height)
+
+    console.log(`[WINDOW] Detected Sreen Size: ${width}x${height}`)
 
     const dockedTop = configDock.get('dock-pos.value') == "top"
     const barHeight = Number(configSizes.get("height.value"))
     const horizontalMargin = Number(configDock.get("horizontal-margin.value"))
     const verticalMargin = Number(configDock.get("vertical-margin.value"))
 
-    console.log("Sizes", dockedTop, barHeight, horizontalMargin, verticalMargin)
-
     const calculated = {
         width: width - horizontalMargin * 2,
         height: barHeight,
         x: horizontalMargin,
-        y: dockedTop 
+        y: dockedTop
             ? verticalMargin
-            // I don't know why 9, ask microsoft
-            : height - barHeight - 9 - verticalMargin 
+            // I don't know why 11, ask microsoft
+            : height - barHeight - 11 - verticalMargin 
     }
 
-    console.log("Calculated bounds:", calculated)
+    console.log(`[WINDOW] Calculated: x:${calculated.x} y:${calculated.y} w:${calculated.width} h:${calculated.height}`)
 
     return calculated
 
