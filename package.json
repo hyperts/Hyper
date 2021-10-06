@@ -57,7 +57,7 @@
         "yaml": "^1.10.2",
         "react": "^17.0.2",
         "react-dom": "^17.0.2",
-        "framer-motion": "^4.1.17",
+        "framer-motion": "^4.1.17"
     },
     "resolutions": {
         "node-forge": "0.10.0"
