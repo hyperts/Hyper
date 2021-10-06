@@ -20,7 +20,7 @@ function App() {
     }, [])
 
 
-    return <div id="hyperbar" className="flex flex-row h-screen">
+    return <div id="hyperbar" className="flex flex-row">
 
     </div>
 }
