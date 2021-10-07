@@ -2,9 +2,14 @@ import WidgetRepository from '../shared/widget'
 import { Config } from '../shared/config'
 
 const configSizes = new Config("appearence.items.sizes.fields")
+const configColors = new Config("appearence.items.color.fields")
 
 document.documentElement.style.setProperty('--barsize', configSizes.get("height.value")+'px')
 document.documentElement.style.setProperty('--padding', configSizes.get("padding.value")+'px')
+
+document.documentElement.style.setProperty('--accent', configColors.get("accent.value"))
+document.documentElement.style.setProperty('--primary', configColors.get("primary.value"))
+document.documentElement.style.setProperty('--secondary', configColors.get("secondary.value"))
 
 export function loadWidgets() {
   const widgetController = new WidgetRepository()

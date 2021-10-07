@@ -1,6 +1,12 @@
 import { screen } from 'electron';
 import { Config } from '../shared/config';
 
+import log from 'electron-log'
+import {homedir} from 'os'
+import {join} from 'path'
+const logger = log.scope('WINDOW')
+log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+
 export function stringToHex(color: string){
     return Number(color.replace("#", "0x")) || 0x000000
 }
@@ -11,7 +17,7 @@ export function generateBounds() {
 
     const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-    console.log(`[WINDOW] Detected Sreen Size: ${width}x${height}`)
+    logger.log(`Detected Sreen Size: ${width}x${height}`)
 
     const dockedTop = configDock.get('dock-pos.value') == "top"
     const barHeight = Number(configSizes.get("height.value"))
@@ -28,7 +34,7 @@ export function generateBounds() {
             : height - barHeight - 11 - verticalMargin 
     }
 
-    console.log(`[WINDOW] Calculated: x:${calculated.x} y:${calculated.y} w:${calculated.width} h:${calculated.height}`)
+    logger.log(`Calculated: x:${calculated.x} y:${calculated.y} w:${calculated.width} h:${calculated.height}`)
 
     return calculated
 

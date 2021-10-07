@@ -2,7 +2,13 @@ import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
 import {createSettingsWindow} from './createwindows'
 import {createServer} from 'net'
 import {HSWWData} from '../@types/hyper'
-// import log from 'electron-log'
+
+import log from 'electron-log'
+import {homedir} from 'os'
+import {join} from 'path'
+const logger = log.scope("IPC")
+
+log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
 
@@ -10,7 +16,7 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     const PIPE_PATH = "\\\\.\\pipe\\" + PIPE_NAME
 
     const server = createServer(function(stream: any) {
-        console.log('[IPC] Pipe: Hyper initialized')
+        logger.debug('PIPE :: Hyper initialized')
 
         stream.on('data', function(c: any) {
             const data = JSON.parse(c.toString()) as HSWWData            
@@ -18,15 +24,15 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         });
 
         stream.on('end', function() {
-            console.log('IPC PIPE :: Connection ended')
+            logger.debug('PIPE :: Connection ended')
             server.close();
         });
 
-        stream.write('[IPC] Pipe: Soft landed');
+        stream.write('PIPE :: Soft landed');
     });
 
     server.on('close',function(){
-        console.log('[IPC] Pipe: Server closed')
+        logger.debug('PIPE :: Server closed')
     })
 
     server.listen(PIPE_PATH,function(){

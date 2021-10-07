@@ -3,6 +3,12 @@ import { Config } from '../shared/config';
 import { stringToHex, generateBounds } from './utils';
 import ewc from 'ewc';
 
+import log from 'electron-log'
+import {homedir} from 'os'
+import {join} from 'path'
+const logger = log.scope('WINDOW')
+log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+
 
 export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
   
@@ -66,7 +72,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
             windows.splash = null  
         }
 
-        console.log("[MAIN] Hyper loaded")
+        logger.debug("Hyper loaded")
     })
 
     
@@ -80,7 +86,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
 }
 
 export function createSplash(windows: {[key: string]:BrowserWindow}) {
-    console.log("[WINDOW] Creating load screen")
+    logger.debug("Creating load screen window")
 
     windows.splash = new BrowserWindow({
         width: 600, 
@@ -139,7 +145,7 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
         ewc.setAcrylic(windows.settings, 0x21212120)
     
         windows.settings.on('ready-to-show', function(){
-            console.log("[WINDOW] Settings: Ready")
+            console.debug("Created Settings window")
         })
         
         windows.settings.on('close', (e)=>{

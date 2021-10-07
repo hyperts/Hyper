@@ -8,6 +8,11 @@ import { createSplash } from './main/createwindows';
 
 import './main/checkdir';
 
+import log from 'electron-log'
+import {join} from 'path'
+const logger = log.scope('WIDGET')
+log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+
 export const windows = {}
 
 
@@ -34,7 +39,7 @@ app.on('ready', ()=>{
     widgets.loadWidgetsInPaths()
 
     widgets.loadedWidgets.forEach( widget => {
-        console.log(`[WIDGET] Loaded: ${widget?.name} -> Version: ${widget?.version}`)
+        logger.debug(`Loaded: ${widget?.name} -> Version: ${widget?.version}`)
     })
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D

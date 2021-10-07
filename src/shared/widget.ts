@@ -2,6 +2,10 @@ import { join } from 'path';
 import { homedir } from 'os';
 import { readdirSync, existsSync, readFileSync } from 'fs';
 import { Config } from '../shared/config';
+
+import log from 'electron-log'
+const logger = log.scope('WIDGET')
+log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
 class WidgetRepository {
     public loadedWidgets: [widget?: {name:string, main?: string, renderer?: string, version: string, widgetPath?: string, file?: string, run?: any}];
     private isRenderer: boolean;
@@ -49,7 +53,7 @@ class WidgetRepository {
             widgetObject.default(this.getWidgetContext())
             
         } catch (err) {
-            console.error(`[WIDGET] [${widgetInfo.file}] :: ${err}`);
+            logger.error(`Failed loading [${widgetInfo.file}]`);
         }
     }
 
@@ -58,12 +62,12 @@ class WidgetRepository {
         const widgetPathPackageJson = join(widgetPath, 'package.json');
 
         if (!existsSync(widgetPath)) {
-            console.warn(`[WIDGET] [${widgetPath}] :: path is invalid`);
+            logger.warn(`Path [${widgetPath}] is invalid`);
             return;
         }
 
         if (!existsSync(widgetPathPackageJson)) {
-            console.warn(`[WIDGET] [${widgetPath}] :: ${widgetPathPackageJson} does not exist`);
+            logger.warn(`Failed to load [${widgetPath}]\n > ${widgetPathPackageJson} does not exist`);
             return;
         }
 
