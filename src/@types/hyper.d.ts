@@ -32,7 +32,7 @@ export type ConfigField = {
 })
 
 export type HSWWData = {
-  Event: "window.openened" | "window.close" | "window.renamed"
+  Event: "window.opened" | "window.close" | "window.renamed"
   ProcessId: number
   Name: string
   WindowHandle: string // We cast this as string, because node -> win32 FFI is weird.
