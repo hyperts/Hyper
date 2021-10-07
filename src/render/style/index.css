@@ -16,3 +16,23 @@ body, html {
     background: transparent !important;
     font-family: 'Montserrat', sans-serif;
 }
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #272727 #121212;
+  }
+
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: #121212;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #272727;
+    border-radius: 10px;
+    border: none;
+  }
