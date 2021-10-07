@@ -30,3 +30,10 @@ export type ConfigField = {
   type: "checkbox" | "number" | "color" | "text"
   options?: string[]
 })
+
+export type HSWWData = {
+  Event: "window.openened" | "window.close" | "window.renamed"
+  ProcessId: number
+  Name: string
+  WindowHandle: string // We cast this as string, because node -> win32 FFI is weird.
+}

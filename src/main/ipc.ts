@@ -1,7 +1,53 @@
-import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron';
-import { createSettingsWindow } from './createwindows'
+import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
+import {createSettingsWindow} from './createwindows'
+import {createServer} from 'net'
+import {HSWWData} from '../@types/hyper'
+// import log from 'electron-log'
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
+
+    const PIPE_NAME = "hyper"
+    const PIPE_PATH = "\\\\.\\pipe\\" + PIPE_NAME
+
+    const server = createServer(function(stream: any) {
+        console.log('[IPC] Pipe: Hyper initialized')
+
+        stream.on('data', function(c: any) {
+            const data = JSON.parse(c.toString()) as HSWWData            
+            windows?.main.webContents.send(`hws_${data.Event}`, data)
+        });
+
+        stream.on('end', function() {
+            console.log('IPC PIPE :: Connection ended')
+            server.close();
+        });
+
+        stream.write('[IPC] Pipe: Soft landed');
+    });
+
+    server.on('close',function(){
+        console.log('[IPC] Pipe: Server closed')
+    })
+
+    server.listen(PIPE_PATH,function(){
+        // console.log('Server :: listening')
+    })
+
+
+
+    // Pipe client, just in case...
+    // var client = connect(PIPE_PATH, function() {
+    //     console.log('Client :: connected');
+    // })
+
+    // client.on('data', function(data: any) {
+    //     // console.log('Client: data:', data.toString());
+    // });
+
+    // client.on('end', function() {
+    //     // console.log('Client :: ended');
+    // })
+
     app.on('window-all-closed', () => {
        app.quit()
     })
@@ -24,10 +70,6 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         const { x, y } = screen.getCursorScreenPoint()
         windows.settings.setPosition(x - mouseX, y - mouseY)
     });
-    
-    ipcMain.on('windowMoved', () => {
-    
-    })
 
     ipcMain.on('refreshApp', () => {
         app.relaunch()
