@@ -4,17 +4,19 @@ import * as Icon from 'react-feather';
 
 type ItemProps = {
     name: string,
-    path: string,
+    category: string,
+    entry: string,
     active?: string,
-    click?: (path: string, name: string)=> void,
+    click?: (category: string)=> void,
     icon: string,
     key?: string
 }
 
-function Item( {name, click, active, icon, path} : ItemProps) {
+function Item( {name, click, active, icon, category, entry } : ItemProps) {
+    console.log("ITEM.JSX Name :: ", name, " ACTIVE :: ", active, " CATEGORY ::", category)
+
     //@ts-ignore
     const Glyph : ElementType = Icon[icon]
-
     return <>
         <li 
             className={`
@@ -24,15 +26,15 @@ function Item( {name, click, active, icon, path} : ItemProps) {
                 hover:bg-accent 
                 rounded-md font-normal
                 transition-all duration-300 cursor-pointer 
-                ${path === active ? 'bg-accent px-2 rounded-md text-bg font-bold' : 'text-gray-200'}
+                ${active === category + '.' + entry ? 'bg-accent px-2 rounded-md text-white font-bold' : 'text-gray-200'}
             `}
             key={name}
             onClick={()=>{
                 console.log("Clicked", name)
-                if (click) { click(path, name) }
+                if (click) { click(`${category}.${entry}`) }
             }}
         >
-            <Glyph size={16} strokeWidth={path === active? 3 : 2} className={`mr-3`} key/>
+            <Glyph size={16} strokeWidth={active ===  category + '.' + entry ? 3 : 2} className={`mr-3`} key/>
             {name}
         </li>
     </>

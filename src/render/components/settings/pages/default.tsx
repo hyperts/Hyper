@@ -1,40 +1,47 @@
-import React, { ElementType } from 'react';
+import React, { ElementType} from 'react';
 import { Config } from '../../../../shared/config';
 import * as Icon from 'react-feather';
+import { ConfigItem } from'../../../../@types/hyper'
 
 import Input from '../input';
 
 type PageProps = {
-    path: string,
+    active: string,
     change?: () => void;
 }
 
-function ConfigPage( {path, change}: PageProps ) {
-    const config = new Config(path)
-    
-    function generateFields(fields: object) {
+function ConfigPage( {active, change}: PageProps ) {
+    const config = new Config()
+    const { category, entry } = { category: active.split('.')[0], entry: active.split('.')[1] }
 
-        return Object.keys(fields).map( (field: string)=>{
-            const fieldData = config.get(`fields.${field}`)
+
+    console.log("DEFAULT.JSX Category :: ", category, " Entry :: ", entry)
+
+    function generateFields(entryData: ConfigItem) {
+        console.log("PAGE.JSX > generateFields :: ", entryData)
+        return Object.keys(entryData.fields).map( field =>{
+            const fieldData = entryData.fields[field]
 
             return <>
                 <div className={`mt-8`}>
                     <h4 className={`font-bold`}> {fieldData.name} </h4>
                     <p className={`text-xs text-gray-400`}> {fieldData.description} </p>
-                    <Input path={`${path}.fields.${field}`} type={fieldData.type} value={fieldData.value} change={change} options={fieldData.options}/>
+                    <Input category={category} entry={entry} field={field} type={fieldData.type} value={fieldData.value} change={change} options={fieldData.options}/>
                 </div>
             </>
         })
     }
 
     function generateEntry() {
-        const name = config.data.name
-        const description = config.data?.description || 'Missing description'
-        const fields = config.data?.fields
-        //@ts-ignore
-        const Glyph : ElementType = Icon[config.data.icon]
 
-        if (!fields) {
+        const entryData = config.getItem(category, entry)
+
+        console.log("PAGE.JSX > GenerateEntry :: ", entryData)
+
+        //@ts-ignore
+        const Glyph : ElementType = Icon[entryData.icon]
+
+        if (!entryData.fields) {
             return <>
                 <div className={`w-full h-full flex relative items-center align-middle justify-items-center`}>
                     <div className={`flex flex-col w-full relative text-center`}>
@@ -49,13 +56,14 @@ function ConfigPage( {path, change}: PageProps ) {
         }
         return <>
             <div className={`mb-4 text-white`}>
-                <h3 className={`text-2xl text-bold flex flex-row items-center`}><Glyph size={22} className={`mr-3`} key/> {name}</h3>
-                <p className={`text-xs mt-1 font-light text-gray-300`}>{description}</p>
+                <h3 className={`text-2xl text-bold flex flex-row items-center`}><Glyph size={22} className={`mr-3`} key/> {entryData.name}</h3>
+                <p className={`text-xs mt-1 font-light text-gray-300`}>{entryData.description}</p>
                 <div className={`flex flex-col w-full mt-2`}>
-                    {generateFields(fields)}
+                    {generateFields(entryData)}
                 </div>
             </div>
         </>
+
     }
 
     if (!config.data) {

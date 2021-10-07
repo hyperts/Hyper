@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Config } from '../../../../shared/config';
+import { ConfigTable, ConfigCategory } from'../../../../@types/hyper'
 
 import '../../../style/index.css';
 import '../../../style/settings.module.css';
@@ -15,22 +16,24 @@ type SidebarProps = {
 }
 class Sidebar extends Component<SidebarProps> {
     
-    generateEntries(entry: string) {
-      return Object.keys(config.get(`${entry}.items`)).map( (field)=>{
-        const fieldData = config.get(`${entry}.items.${field}`)
-
-        return <Item name={fieldData.name} path={`${entry}.items.${field}`} click={ this.props.onChange } icon={fieldData.icon} active={this.props.active}/>
+    generateEntries(category: string) {
+     const categoryData = config.data[category] as ConfigCategory
+      console.log("SIDEBAR.JSX ACTIVE ::", this.props.active)
+      
+      return Object.keys(categoryData.items).map( entry => {
+        const entryData = categoryData.items[entry]
+        return <Item active={this.props.active} name={entryData.name} category={category} entry={entry} click={ this.props.onChange } icon={entryData.icon} key={`${categoryData.name}.${entryData.name}`}/>
       })
     }
 
     generateCategories() {
-        return Object.keys(config.getAll()).map( (entry)=> {
-            const entryData = config.get(entry)
+        return Object.keys(config.data as ConfigTable).map( entry => {
+            const category = config.data[entry] as ConfigCategory
 
             return (
                 <>
-                    <span className={`text-xs text-white opacity-30 category`}>{entryData.name}</span>
-                    <ul className={`text-white font-normal mt-3`}>
+                    <span className={`text-xs text-white opacity-30 category`} key={`${category.name}`}>{category.name}</span>
+                    <ul className={`text-white font-normal mt-3`} key={`${category.name}.${entry}`}>
                         {this.generateEntries(entry)}
                     </ul>
                 </>
@@ -56,9 +59,9 @@ class Sidebar extends Component<SidebarProps> {
                     </header>
                     <span className={`text-xs text-white opacity-30 category`}>Hyper</span>
                     <ul className={`text-white font-normal mt-3`}>
-                        <Item name={'About'} path={'hyper.about'} click={ this.props.onChange } icon={"Info"} active={this.props.active}/>
-                        {/* <Item name={'Themes'} path={'hyper.themes'} click={ this.props.onChange } icon={"Tag"} active={this.props.active}/>
-                        <Item name={'Widgets'} path={'hyper.widgets'} click={ this.props.onChange } icon={"Box"} active={this.props.active}/> */}
+                        <Item name={'About'} category={'hyper_about'} entry={'special'} click={ this.props.onChange } icon={"Info"} active={this.props.active} key="hyper_about" />
+                        <Item name={'Themes'} category={'hyper_themes'} entry={'special'} click={ this.props.onChange } icon={"Tag"} active={this.props.active} key="hyper_themes" />
+                        <Item name={'Widgets'} category={'hyper_widgets'} entry={'special'} click={ this.props.onChange } icon={"Box"} active={this.props.active} key="hyper_widgets" />
                     </ul>
                     {this.generateCategories()}
                     {this.props.children}

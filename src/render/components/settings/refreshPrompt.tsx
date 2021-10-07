@@ -25,7 +25,7 @@ function refreshPrompt() {
 
     return <>
         <motion.div
-            className={`flex flex-col absolute transform left-1/2 -translate-x-1/2 rounded-md bg-primary text-white top-full`}
+            className={`flex flex-col fixed transform left-2/3 rounded-md bg-primary text-white top-full`}
             animate={controls}
         >
             <motion.div
