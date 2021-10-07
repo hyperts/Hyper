@@ -19,10 +19,6 @@ function App() {
     const [active, SetActive] = useState('hyper_about.special');
     const [refreshPeding, setPeding] = useState(false)
 
-    console.log("SETTINGS.JSX ACTIVE :: ", active)
-
-
-
     function settingChanged() {
         setPeding(true)
     }

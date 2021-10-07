@@ -18,8 +18,7 @@ class Sidebar extends Component<SidebarProps> {
     
     generateEntries(category: string) {
      const categoryData = config.data[category] as ConfigCategory
-      console.log("SIDEBAR.JSX ACTIVE ::", this.props.active)
-      
+
       return Object.keys(categoryData.items).map( entry => {
         const entryData = categoryData.items[entry]
         return <Item active={this.props.active} name={entryData.name} category={category} entry={entry} click={ this.props.onChange } icon={entryData.icon} key={`${categoryData.name}.${entryData.name}`}/>

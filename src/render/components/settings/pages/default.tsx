@@ -15,10 +15,7 @@ function ConfigPage( {active, change}: PageProps ) {
     const { category, entry } = { category: active.split('.')[0], entry: active.split('.')[1] }
 
 
-    console.log("DEFAULT.JSX Category :: ", category, " Entry :: ", entry)
-
     function generateFields(entryData: ConfigItem) {
-        console.log("PAGE.JSX > generateFields :: ", entryData)
         return Object.keys(entryData.fields).map( field =>{
             const fieldData = entryData.fields[field]
 
@@ -35,8 +32,6 @@ function ConfigPage( {active, change}: PageProps ) {
     function generateEntry() {
 
         const entryData = config.getItem(category, entry)
-
-        console.log("PAGE.JSX > GenerateEntry :: ", entryData)
 
         //@ts-ignore
         const Glyph : ElementType = Icon[entryData.icon]

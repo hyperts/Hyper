@@ -13,8 +13,6 @@ type ItemProps = {
 }
 
 function Item( {name, click, active, icon, category, entry } : ItemProps) {
-    console.log("ITEM.JSX Name :: ", name, " ACTIVE :: ", active, " CATEGORY ::", category)
-
     //@ts-ignore
     const Glyph : ElementType = Icon[icon]
     return <>

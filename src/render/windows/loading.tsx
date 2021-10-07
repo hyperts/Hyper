@@ -22,7 +22,6 @@ class App extends React.Component<LoadingProps, LoadingStates> {
     }
    
     componentWillMount() {
-        console.log("It will mount")
         axios.get('https://raw.githubusercontent.com/hyperts/hyperassets/main/loadingartwork.json') // TODO: Move this to .env?
         .then((response)=>{
             console.log("Response", response)
@@ -44,7 +43,6 @@ class App extends React.Component<LoadingProps, LoadingStates> {
     }
 
     render() {
-        console.log("Mounted", this.state.artwork)
         return <>
             <div className={`flex flex-row w-full h-screen bg-bg rounded-md text-white dragger`}>
                 <div className={`flex flex-row relative w-1/2 bg-primary rounded-tl-md rounded-bl-md dragger`}>
