@@ -1,38 +1,59 @@
 import { Config } from '../../../shared/config';
 import React from 'react';
+import { ColorPicker, useColor } from "react-color-palette";
 
 import '../../style/input.module.css'
 
 type InputProps = {
     value: any;
     type: string;
-    path: string;
+    category: string;
+    entry: string;
+    field: string;
     options?: Array<string>;
     change?: () => void;
 }
 
-const config = new Config()
 
-function Input({ path, value, type, options, change }: InputProps) {
+function Input({ category, entry, field, value, type, options, change }: InputProps) {
+   
+
+    const config = new Config()
+    
+    console.log("FIELD.JSX Category ::", category, "Entry ::", entry, "Field ::", field)
 
     function applyChange(newValue: any) {
-        config.set(path, newValue, (Err) => console.log)
+        change?.()
+        config.set(category, entry, field, newValue, (Err) => console.log)
         config.save(()=>{
+            console.log("Applied change?")
             change?.()
         })
     }
 
+
     function renderForm() {
         switch (type) {
             case "color":
+                const [color, setColor] = useColor("hex", value);
+
+                if (color.hex !== value) {
+                    applyChange(color.hex)
+                }
+                
+                return <>
+                    <div className="relative flex flex-row w-full h-full mt-2">
+                        <ColorPicker width={350} height={150} color={color} onChange={setColor} hideHSV dark alpha/>
+                    </div>
+                </>
                 break;
             case "text":
                 break;
             case "checkbox":
                 return <>
-                    <label htmlFor={path} className="flex items-center mt-2 cursor-pointer">
+                    <label htmlFor={`${category}.${entry}.${field}`} className="flex items-center mt-2 cursor-pointer">
                         <div className="relative">
-                            <input id={path} type="checkbox" className="hidden" onChange={(e)=>{
+                            <input id={`${category}.${entry}.${field}`} type="checkbox" className="hidden" onChange={(e)=>{
                                 change?.()
                                 applyChange(e.target.checked)
                             }} defaultChecked={value} />
@@ -51,7 +72,7 @@ function Input({ path, value, type, options, change }: InputProps) {
                             <button
                                 className="w-20 h-full text-gray-400 transition-all duration-300 outline-none cursor-pointer rounded-l-md bg-navbar hover:text-white hover:bg-accent"
                                 onClick={e => {
-                                    const element = document.getElementById(`${path}`)
+                                    const element = document.getElementById(`${category}.${entry}.${field}`)
                                     // @ts-ignore // We need to ignore this, the solution for that is a stupid type swap, which i'm not going to do
                                     let num = Number(element.value);
                                     num--;
@@ -63,9 +84,9 @@ function Input({ path, value, type, options, change }: InputProps) {
                                 <span className="m-auto text-2xl font-thin">−</span>
                             </button>
                             <input 
-                                id={path} 
+                                id={`${category}.${entry}.${field}`} 
                                 type="number" 
-                                className="flex items-center w-full text-center text-white transition-all duration-300 outline-none bg-navbar focus:outline-none text-md hover:text-white focus:text-accent md:text-basecursor-default" name={path} 
+                                className="flex items-center w-full text-center text-white transition-all duration-300 outline-none bg-navbar focus:outline-none text-md hover:text-white focus:text-accent md:text-basecursor-default" name={`${category}.${entry}.${field}`} 
                                 defaultValue={value} 
                                 onChange={(e)=>{
                                     applyChange(Number(e.target.value))
@@ -74,7 +95,7 @@ function Input({ path, value, type, options, change }: InputProps) {
                             <button
                                 className="w-20 h-full text-gray-400 transition-all duration-300 cursor-pointer rounded-r-md bg-navbar hover:text-white hover:bg-accent"
                                 onClick={e => {
-                                    const element = document.getElementById(`${path}`)
+                                    const element = document.getElementById(`${category}.${entry}.${field}`)
                                     //@ts-ignore // I'm not doing type swap, sorry.
                                     let num = Number(element.value);
                                     num++;
@@ -93,7 +114,7 @@ function Input({ path, value, type, options, change }: InputProps) {
                     <div className="mt-2">
                         <div className="relative inline-block dropdown">
                             <button className="inline-flex items-center px-4 py-2 font-semibold text-white rounded bg-navbar">
-                                <span id={path} className="mr-1">{value}</span>
+                                <span id={`${category}.${entry}.${field}`} className="mr-1">{value}</span>
                                 <svg className="w-4 h-4 ml-3 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /> </svg>
                             </button>
                             <ul className="absolute hidden w-64 pt-1 text-white dropdown-menu">
@@ -104,7 +125,7 @@ function Input({ path, value, type, options, change }: InputProps) {
                                         return <li className=""><a className="block px-4 py-2 whitespace-no-wrap transition-all duration-300 cursor-pointer bg-secondary hover:bg-accent" 
                                         onClick={()=>{
                                             //@ts-ignore // I'm not doing type swap, sorry.
-                                            document.getElementById(path)?.innerText = option
+                                            document.getElementById(`${category}.${entry}.${field}`)?.innerText = option
                                             applyChange(option)
                                         }}>{option}</a></li>
                                     }
@@ -115,7 +136,9 @@ function Input({ path, value, type, options, change }: InputProps) {
                     </div>
                 </>
             default:
-                return <div className={`mt-2`}> 😞 Field type not recognized </div>
+                return <>
+                    <div className={`mt-2`}> 😞 Field type not recognized </div>
+                </>
         }
     }
 
