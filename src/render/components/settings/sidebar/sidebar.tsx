@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PerfectScrollbar from 'perfect-scrollbar';
 import { Config } from '../../../../shared/config';
-import { ConfigTable, ConfigCategory } from'../../../../@types/hyper'
+import type { ConfigTable, ConfigCategory } from'../../../../@types/hyper'
 
 import '../../../style/index.css';
 import '../../../style/settings.module.css';

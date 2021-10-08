@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { homedir } from 'os';
 import { readdirSync, existsSync, readFileSync } from 'fs';
-import { Config } from '../shared/config';
+import { Config } from './config';
 
 import log from 'electron-log'
 const logger = log.scope('WIDGET')
@@ -72,10 +72,32 @@ class WidgetRepository {
         }
 
         let widgetInfo = JSON.parse( readFileSync(widgetPathPackageJson).toString() );
+            
         widgetInfo = Object.assign(widgetInfo, {
             widgetPath,
             file: join(widgetPath, this.isRenderer ? widgetInfo.renderer : widgetInfo.main)
         })
+
+        if (widgetInfo.hypersettings && widgetInfo.hypersettings.fields && Object.keys(widgetInfo.hypersettings.fields).length > 0) {
+            const config = new Config()
+            if (!config.get('widgets')) {
+                config.insert('widgets', {
+                    name: "Widgets",
+                    items: {}
+                })
+            }
+            
+            if (!config.getEntry('widgets', widgetInfo.hypersettings.name)) {
+                config.addEntry('widgets', {
+                    name: widgetInfo.hypersettings.name,
+                    description: widgetInfo.hypersettings.description,
+                    icon: widgetInfo.hypersettings.icon,
+                    fields: widgetInfo.hypersettings.fields
+                })
+
+                config.save()
+            }            
+        }
         
         this.requireWidget(widgetInfo);
     }

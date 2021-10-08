@@ -1,7 +1,7 @@
 import React, { ElementType} from 'react';
 import { Config } from '../../../../shared/config';
 import * as Icon from 'react-feather';
-import { ConfigItem } from'../../../../@types/hyper'
+import type { ConfigItem } from'../../../../@types/hyper'
 
 import Input from '../input';
 
@@ -31,7 +31,7 @@ function ConfigPage( {active, change}: PageProps ) {
 
     function generateEntry() {
 
-        const entryData = config.getItem(category, entry)
+        const entryData = config.getEntry(category, entry)
 
         //@ts-ignore
         const Glyph : ElementType = Icon[entryData.icon]

@@ -2,7 +2,7 @@ import  fs from 'fs'
 import { homedir } from 'os';
 import YAML from 'yaml'
 import * as objSearch from 'dot-prop'
-import { ConfigTable, ConfigCategory, ConfigItem, ConfigField } from '../@types/hyper'
+import type { ConfigTable, ConfigCategory, ConfigItem, ConfigField } from '../@types/hyper'
 
 export class Config {
 
@@ -27,14 +27,14 @@ export class Config {
   /**
    * Returns the item object with provided keys
    * @param {string} category The category which contains the wanted item
-   * @param {string} item The wanted item
+   * @param {string} entry The wanted entry
    * @return {ConfigItem} The item object
    */
-  public getItem: (category: string, entry: string) => ConfigItem;
+  public getEntry: (category: string, entry: string) => ConfigItem;
   /**
-   * Returns the item object with provided keys
-   * @param {string} category The category which contains the wanted field
-   * @param {string} entry The wanted item which the field belongs to
+   * Returns the entry object with provided keys
+   * @param {string} category The category which contains the wanted entry
+   * @param {string} entry The wanted entry which the field belongs to
    * @param {string} field The field name
    * @return {ConfigField} The field object
    */
@@ -57,17 +57,26 @@ export class Config {
   /**
    * Inserts a new category to the config table
    * @param {string} category The category name
-   * @param {ConfigItem} data The data to be inserted
+   * @param {ConfigCategory} data The data to be inserted
    * @return {string} String with the object path (to be used withing config.get())
    */
-  public insert: (category:string, data: ConfigItem) => string;
+  public insert: (category:string, data: ConfigCategory) => string;
+  /**
+   * Adds a new section under said category
+   * A section is the block that holds fields, it's what the user sees on the sidebar
+   * @param {string} category 
+   * @param {ConfigItem} data 
+   * @return {string} The oject path to the newly added entry
+   */
+  public addEntry: (category: string, data: ConfigItem) => string;
   /**
    * Adds a new field under specified category
    * @param {string} category The category name
+   * @param {string} entry The section inside category which holds the fields
    * @param {ConfigField} field The field with all of it's data to be added
-   * @return {string} path the object path to the newly added field
+   * @return {string} The object path to the newly added field
    */
-  public addField: (category:string, data: ConfigField) => string;
+  public addField: (category:string, entry: string, data: ConfigField) => string;
   private path: string;
   private yaml: string;
   /**
@@ -96,8 +105,10 @@ export class Config {
       return stack
     }
 
-    this.getItem = function (category: string, entry: string) {
-      const stack = objSearch.get(this.data, `${category}.items.${entry}`) as ConfigItem
+    this.getEntry = function (category: string, entry: string) {
+      const entryKey = entry.toLocaleLowerCase().replace(' ', '_')
+      
+      const stack = objSearch.get(this.data, `${category}.items.${entryKey}`) as ConfigItem
       return stack
     }
 
@@ -121,17 +132,13 @@ export class Config {
       if (callback) { callback() }
     }
 
-    this.insert = function( category,{name, description, icon} ) {
+    this.insert = function( category,{name} ) {
       const categoryKey = category.toLocaleLowerCase().replace(' ', '_')
 
       if (!this.data[categoryKey]) {
         this.data[categoryKey] = {
-          name: category,
+          name: name,
           items: {
-            name,
-            description,
-            icon,
-            fields: []
           }
         }
       }
@@ -139,14 +146,34 @@ export class Config {
       return categoryKey
 
     }
-
-    this.addField = function(category, {name, description, type, value, options}) {
+    
+    this.addEntry = function( category, {name, description, icon, fields}) {
       const categoryKey = category
 
       const explodedKey = name.split(" ")
       const key = explodedKey.join("_").toLowerCase()
 
-      objSearch.set(this.data, `${categoryKey}.items.fields.${key}`, {
+      objSearch.set(this.data, `${categoryKey}.items.${key}`, {
+        name,
+        description,
+        icon,
+        fields: fields || {}
+      })
+
+      return `${categoryKey}.items.${key}`
+    }
+
+    this.addField = function(category, entry, {name, description, type, value, options}) {
+      const categoryKey = category
+
+      const explodedEntry = name.split(" ")
+      const entryKey = explodedEntry.join("_").toLowerCase()
+
+      const explodedKey = name.split(" ")
+      const key = explodedKey.join("_").toLowerCase()
+      
+
+      objSearch.set(this.data, `${categoryKey}.items.${entryKey}.fields.${key}`, {
         name,
         description,
         type,
@@ -154,7 +181,7 @@ export class Config {
         options
       })
 
-      return `${categoryKey}.items.fields.${key}`
+      return `${categoryKey}.items.${entry}.fields.${key}`
     }
 
     this.save = function (callback) {
