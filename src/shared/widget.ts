@@ -53,7 +53,7 @@ class WidgetRepository {
             widgetObject.default(this.getWidgetContext())
             
         } catch (err) {
-            logger.error(`Failed loading [${widgetInfo.file}]`);
+            logger.error(`Failed loading [${widgetInfo.file}] - ${err}`);
         }
     }
 

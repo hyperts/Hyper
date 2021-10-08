@@ -123,7 +123,7 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
             thickFrame: false,
             hasShadow: false,
             backgroundColor: '#00000000',
-            resizable: true,
+            resizable: false,
             minWidth: 800,
             minHeight: 500,
             skipTaskbar: false,
