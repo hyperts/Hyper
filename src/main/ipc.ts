@@ -1,7 +1,7 @@
 import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
 import {createSettingsWindow} from './createwindows'
 import {createServer} from 'net'
-import {HSWWData} from '../@types/hyper'
+import type {HSWWData} from '../@types/hyper'
 
 import log from 'electron-log'
 import {homedir} from 'os'
