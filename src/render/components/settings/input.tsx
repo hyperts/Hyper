@@ -48,6 +48,24 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 </>
                 break;
             case "text":
+                return <>
+                    <div className="z-0 mt-2 w-26 h-9 custom-text-input">
+                        <div className="relative flex flex-row w-full h-full mt-1 rounded-md ">
+                        <input
+                            id={entry}
+                            type="text"
+                            name={entry}
+                            className="px-4 py-2 border border-transparent rounded-lg bg-navbar focus:outline-none focus:ring-0 focus:border-accent focus:text-accent"
+                            defaultValue={value}
+                            onChange={(e)=>{
+                                console.log("Field", e.target.value)
+                                change?.()
+                                applyChange(e.target.value)
+                            }}
+                            />
+                        </div>
+                    </div>
+                </>
                 break;
             case "checkbox":
                 return <>
