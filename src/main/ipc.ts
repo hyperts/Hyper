@@ -11,6 +11,7 @@ const logger = log.scope("IPC")
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
+    logger.debug("Initializing")
 
     const PIPE_NAME = "hyper"
     const PIPE_PATH = "\\\\.\\pipe\\" + PIPE_NAME
@@ -19,6 +20,7 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         logger.debug('PIPE :: Hyper initialized')
 
         stream.on('data', function(c: any) {
+            // logger.debug(`PIPE :: Received message [${c.toString()}]`)
             const data = JSON.parse(c.toString()) as HSWWData            
             windows?.main.webContents.send(`hws_${data.Event}`, data)
         });
@@ -36,7 +38,7 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     })
 
     server.listen(PIPE_PATH,function(){
-        // console.log('Server :: listening')
+        console.log('Server :: listening')
     })
 
 

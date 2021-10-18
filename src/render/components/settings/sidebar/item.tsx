@@ -19,7 +19,7 @@ function Item( {name, click, active, icon, category, entry } : ItemProps) {
         <li 
             className={`
                 item flex flex-row items-center
-                text-sm  hover:text-white 
+                text-xs  hover:text-white 
                 py-2 hover:px-2 my-1
                 hover:bg-accent 
                 rounded-md font-normal

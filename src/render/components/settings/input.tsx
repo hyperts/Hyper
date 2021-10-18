@@ -19,14 +19,11 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
    
 
     const config = new Config()
-    
-    console.log("FIELD.JSX Category ::", category, "Entry ::", entry, "Field ::", field)
 
     function applyChange(newValue: any) {
         change?.()
         config.set(category, entry, field, newValue, (Err) => console.log)
         config.save(()=>{
-            console.log("Applied change?")
             change?.()
         })
     }
@@ -42,14 +39,14 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 }
                 
                 return <>
-                    <div className="relative flex flex-row w-full h-full mt-2">
+                    <div className="relative flex flex-row w-full h-full mt-2" key={`${entry}.${value}`}>
                         <ColorPicker width={350} height={150} color={color} onChange={setColor} hideHSV dark alpha/>
                     </div>
                 </>
                 break;
             case "text":
                 return <>
-                    <div className="z-0 mt-2 w-26 h-9 custom-text-input">
+                    <div className="z-0 mt-2 w-26 h-9 custom-text-input" key={`${entry}.${value}`}>
                         <div className="relative flex flex-row w-full h-full mt-1 rounded-md ">
                         <input
                             id={entry}
@@ -69,7 +66,7 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 break;
             case "checkbox":
                 return <>
-                    <label htmlFor={`${category}.${entry}.${field}`} className="flex items-center mt-2 cursor-pointer">
+                    <label htmlFor={`${category}.${entry}.${field}`} className="flex items-center mt-2 cursor-pointer" key={`${entry}.${value}`}>
                         <div className="relative">
                             <input id={`${category}.${entry}.${field}`} type="checkbox" className="hidden" onChange={(e)=>{
                                 change?.()
@@ -85,7 +82,7 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 </>
             case "number":
                 return <>
-                    <div className="z-0 w-24 mt-2 h-9 custom-number-input">
+                    <div className="z-0 w-24 mt-2 h-9 custom-number-input" key={`${entry}.${value}`}>
                         <div className="relative flex flex-row w-full h-full mt-1 bg-transparent rounded-lg">
                             <button
                                 className="w-20 h-full text-gray-400 transition-all duration-300 outline-none cursor-pointer rounded-l-md bg-navbar hover:text-white hover:bg-accent"
@@ -129,7 +126,7 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 </>
             case "selection":
                 return <>
-                    <div className="mt-2">
+                    <div className="mt-2" key={`${entry}.${value}`}>
                         <div className="relative inline-block dropdown">
                             <button className="inline-flex items-center px-4 py-2 font-semibold text-white rounded bg-navbar">
                                 <span id={`${category}.${entry}.${field}`} className="mr-1">{value}</span>
@@ -155,14 +152,14 @@ function Input({ category, entry, field, value, type, options, change }: InputPr
                 </>
             default:
                 return <>
-                    <div className={`mt-2`}> 😞 Field type not recognized </div>
+                    <div className={`mt-2`} key={`${entry}.${value}`}> 😞 Field type not recognized </div>
                 </>
         }
     }
 
 
     return (
-        <div className={``}>
+        <div className={``} key={`${entry}.fields`}>
             {renderForm()}
         </div>
     );

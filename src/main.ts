@@ -30,23 +30,30 @@ app.on('ready', ()=>{
     
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
-        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes${url}`) })
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${url}`) })
+    })    
+
+    protocol.registerFileProtocol('widget', (request, callback) => {
+        const url = request.url.substr(9)
+        console.log("Protocol widget, url:", path.normalize(`${homedir()}/.hyperbar/widgets/${url}`))
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${url}`) })
     })    
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
-    const widgets = new WidgetRepository();
-    widgets.loadWidgetsInPaths()
-
-    widgets.loadedWidgets.forEach( widget => {
-        logger.debug(`Loaded: ${widget?.name} -> Version: ${widget?.version}`)
-    })
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D
     // creators of weather and music widgets will appreciate this.
     setTimeout(() => { 
         createWindows(windows) // Creates main app windows [Main, Settings]
         startIPC(windows) 
+
+        const widgets = new WidgetRepository();
+        widgets.loadWidgetsInPaths()
+
+        widgets.loadedWidgets.forEach( widget => {
+            logger.debug(`Loaded: ${widget?.name} -> Version: ${widget?.version}`)
+        })
     }, 2000);
     
 })

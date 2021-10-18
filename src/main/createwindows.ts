@@ -116,7 +116,7 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
     if (!windows.settings) {
         windows.settings = new BrowserWindow({
             width: 900, 
-            height: 500, 
+            height: 600, 
             show: true, 
             frame: false,
             minimizable: true,

@@ -45,8 +45,7 @@ function App() {
         <Titlebar />
         <div className={`flex w-full h-screen settings-wrapper`}>
             <Sidebar active={active} onChange={pageChange}/>
-
-            <div className={`flex flex-col w-full h-full px-4 py-12 bg-bg rounded-r-md relative overflow-auto`} >
+            <div className={`flex flex-col w-full px-4 py-12 bg-bg rounded-r-md relative overflow-auto`} >
                 {renderPage()}
                 {refreshPeding && <RefreshPrompt />}
 

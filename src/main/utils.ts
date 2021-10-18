@@ -29,7 +29,9 @@ export function generateBounds() {
         height: barHeight,
         x: horizontalMargin,
         y: dockedTop
-            ? verticalMargin
+            ? barHeight < 39 
+                ? barHeight - 39 + verticalMargin
+                : verticalMargin
             // I don't know why 11, ask microsoft
             : height - barHeight - 11 - verticalMargin 
     }
