@@ -1,8 +1,7 @@
-import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
+import {app, BrowserWindow, ipcMain, screen} from 'electron'
 import {createSettingsWindow} from './createwindows'
-import {createServer} from 'net'
-import type {HSWWData} from '../@types/hyper'
-
+import { WebSocketServer } from 'ws'
+import {HSWWData} from '../@types/hyper'
 import log from 'electron-log'
 import {homedir} from 'os'
 import {join} from 'path'
@@ -13,49 +12,29 @@ log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log
 function startIPC(windows: {[key: string]: BrowserWindow}) {
     logger.debug("Initializing")
 
-    const PIPE_NAME = "hyper"
-    const PIPE_PATH = "\\\\.\\pipe\\" + PIPE_NAME
+    const wss = new WebSocketServer({ port: 49737})
 
-    const server = createServer(function(stream: any) {
-        logger.debug('PIPE :: Hyper initialized')
-
-        stream.on('data', function(c: any) {
-            // logger.debug(`PIPE :: Received message [${c.toString()}]`)
-            const data = JSON.parse(c.toString()) as HSWWData            
+    wss.on('connection', function (ws) {
+    
+        ws.on('message', function (message: string) {
+            // console.log("HYPER :: WEBSOCKET :: Received message => ".concat(message));
+            logger.debug(`Websocket message: ${message}`)
+            const data = JSON.parse(message) as HSWWData            
             windows?.main.webContents.send(`hws_${data.Event}`, data)
-        });
+        })
+    
+        wss.on('close', function (this) {
+            console.log("Connection was closed")
+        })
 
-        stream.on('end', function() {
-            logger.debug('PIPE :: Connection ended')
-            server.close();
-        });
-
-        stream.write('PIPE :: Soft landed');
-    });
-
-    server.on('close',function(){
-        logger.debug('PIPE :: Server closed')
+        // Listen to sendSocket only when socket state is READY (1)
+        ipcMain.on('sendSocketMessage', (event, {event_name, data_message}: {event_name: string, data_message: string}) => {
+            wss.clients.forEach( client => {
+                client.send(JSON.stringify({event_name, data_message}))
+            })
+        })
     })
-
-    server.listen(PIPE_PATH,function(){
-        console.log('Server :: listening')
-    })
-
-
-
-    // Pipe client, just in case...
-    // var client = connect(PIPE_PATH, function() {
-    //     console.log('Client :: connected');
-    // })
-
-    // client.on('data', function(data: any) {
-    //     // console.log('Client: data:', data.toString());
-    // });
-
-    // client.on('end', function() {
-    //     // console.log('Client :: ended');
-    // })
-
+    
     app.on('window-all-closed', () => {
        app.quit()
     })
@@ -84,33 +63,11 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         app.exit()
     })
 
-    ipcMain.on('show-context-menu', (event) => {
-        const template = [
-            {
-              label: 'Restart Hyper',
-                click: () => {
-                    app.relaunch()
-                    app.exit()
-                }
-            },
-            { label: 'Close Hyper',
-                click: () => {
-                    app.quit()
-                }
-            },
-            { type: 'separator' },
-            { 
-                label: 'Open Settings',
-                click: () => {
-                    createSettingsWindow(windows)
-                }
-            }
-            
-          ]
-          //@ts-ignore
-          const menu = Menu.buildFromTemplate(template)
-          //@ts-ignore
-          menu.popup(BrowserWindow.fromWebContents(event.sender))
+    ipcMain.on('forceReload', () => { 
+        for (const windowName in windows) {
+            const window = windows[windowName]
+            window?.webContents?.reloadIgnoringCache()
+        }
     })
 }
 
