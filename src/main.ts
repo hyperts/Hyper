@@ -33,8 +33,8 @@ app.on('ready', ()=>{
         callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${url}`) })
     })    
 
-    protocol.registerFileProtocol('widget', (request, callback) => {
-        const url = request.url.substr(9)
+    protocol.registerFileProtocol('widgets', (request, callback) => {
+        const url = request.url.substr(10)
         console.log("Protocol widget, url:", path.normalize(`${homedir()}/.hyperbar/widgets/${url}`))
         callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${url}`) })
     })    
@@ -44,16 +44,24 @@ app.on('ready', ()=>{
     
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D
     // creators of weather and music widgets will appreciate this.
+    
+    const widgetRepository = new WidgetRepository();
+    widgetRepository.loadWidgetsInPaths()
+    widgetRepository.loadedWidgets.forEach( widget => {
+        logger.debug(`Loaded: ${widget?.name}
+        --> Version: ${widget?.version}
+        --> Author: ${widget?.author ?? 'Unknown'}
+        --> Main? ${widget.main}
+        --> Renderer? ${widget.renderer}`)
+    })
+
     setTimeout(() => { 
         createWindows(windows) // Creates main app windows [Main, Settings]
         startIPC(windows) 
-
-        const widgets = new WidgetRepository();
-        widgets.loadWidgetsInPaths()
-
-        widgets.loadedWidgets.forEach( widget => {
-            logger.debug(`Loaded: ${widget?.name} -> Version: ${widget?.version}`)
+        widgetRepository.loadedWidgets.forEach( widget =>{
+            widget.default()
         })
+        widgetRepository.watchWidgets()
     }, 2000);
     
 })

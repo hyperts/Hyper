@@ -39,9 +39,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
     })
 
     windows.main.loadFile('./dist/index.html')
-
-    // TODO: Use inversion of control to spawn widget windows on this shit?
-    // That is a maybe at best, since i would also like to allow people to only spawn windows when needed.
+   
 
     switch (configComposition.get("effect.value")) {
         case "acrylic":
@@ -73,6 +71,9 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         }
 
         logger.debug("Hyper loaded")
+        windows.main?.webContents.openDevTools({
+            mode: 'detach'
+        })
     })
 
     
@@ -151,6 +152,5 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
         windows.settings.on('close', (e)=>{
           delete windows.settings
         })
-    } else {
     }
 }

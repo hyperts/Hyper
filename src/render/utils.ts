@@ -25,6 +25,9 @@ document.documentElement.style.setProperty('--secondary', configColors.get("seco
 export function loadWidgets() {
   const widgetController = new WidgetRepository()
   widgetController.loadWidgetsInPaths(true)
+  widgetController.watchWidgets()
+
+  return widgetController.loadedWidgets
 }
 
 
