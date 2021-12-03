@@ -19,8 +19,12 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         ws.on('message', function (message: string) {
             // console.log("HYPER :: WEBSOCKET :: Received message => ".concat(message));
             logger.debug(`Websocket message: ${message}`)
-            const data = JSON.parse(message) as HSWWData            
-            windows?.main.webContents.send(`hws_${data.Event}`, data)
+            try {
+                const data = JSON.parse(message) as HSWWData            
+                windows?.main.webContents.send(`hws_${data.Event}`, data)
+            } catch {
+                console.log("Invalid json", String(message) )
+            }
         })
     
         wss.on('close', function (this) {
