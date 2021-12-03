@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { homedir } from 'os';
-import { readdirSync, existsSync, readFileSync, lstatSync } from 'fs';
+import { readdirSync, existsSync, readFileSync, lstatSync, rmdirSync } from 'fs';
 import { Config } from './config';
 import chokidar from 'chokidar'
 //@ts-expect-error TODO: Make declaration files for adm-zip
@@ -18,6 +18,7 @@ type WidgetInfo = {
     renderer?: string, 
     version: string, 
     widgetPath?: string, 
+    repository?: string
     file: string
 }
 interface WidgetObject extends WidgetInfo {
@@ -39,14 +40,12 @@ class WidgetRepository {
             return {
                 config:  new Config(),
                 api: {
-                    quit: electron.app.quit,
-                    exit: electron.app.exit,
-                    relaunch: electron.app.relaunch,
                     show: electron.app.show,
                     ipcMain:  electron.ipcMain,
                     browserWindow: electron.BrowserWindow,
                     Menu: electron.Menu,
-                    windows: require('../main').windows
+                    shell: electron.shell,
+                    windows: require('../main').windows,
                 }
             }
         } else {
@@ -56,7 +55,6 @@ class WidgetRepository {
                 config: new Config(),
                 api: {
                     ipcRenderer: electron.ipcRenderer,
-                    app: electron.app
                 },
                 body: document.getElementById('hyperbar')
             }
@@ -127,6 +125,7 @@ class WidgetRepository {
         this.requireWidget(widgetInfo);
     }
 
+
     loadWidgetsInPaths(isRenderer?: boolean) {
         this.isRenderer = isRenderer ?? false
         // TODO: Detect first run
@@ -170,6 +169,48 @@ class WidgetRepository {
         
         logger.debug(`Installed widget - ${JSON.parse(widgetData).name}`)
         return JSON.parse(widgetData)
+    }
+
+    uninstallWidget(widget: WidgetObject) {
+        const directory = widget.file.split('\\widgets\\')
+        console.log("Directory name", directory)
+        const widgetPath = join(homedir(), '.hyperbar', 'widgets', directory[directory.length -1].split('\\')[0])
+        console.log("Path", widgetPath)
+        const widgetPathPackageJson = join(widgetPath, 'package.json');
+        console.log("JSON", widgetPathPackageJson)
+        if (!existsSync(widgetPath)) {
+            logger.error(`Path [${widgetPath}] is invalid`);
+            return;
+        }
+
+        if (!existsSync(widgetPathPackageJson)) {
+            logger.error(`Failed to remove [${widgetPath}]\n > ${widgetPathPackageJson} does not exist`);
+            return;
+        }
+
+        const stats = lstatSync(widgetPath)
+
+        if (stats && !stats.isDirectory()) {
+            logger.warn(`Detected invalid file in widgets path.\n - You forgot to extract the widget?\n - Widget files must be on their own folder, not directly on widgets directory.\n - This file will not be loaded.`)
+        }
+
+        let widgetInfo = JSON.parse( readFileSync(widgetPathPackageJson).toString() );
+            
+        const config = new Config()
+        
+        const entryName = widgetInfo.hypersettings.name.toLowerCase().split(' ').join('_')
+        console.log("Entry", entryName)
+
+        if (config.getEntry('widgets', entryName)) {
+            console.log("Found on entry")
+            delete config.data.widgets.items[entryName]
+            if (config.data.widgets.items.length <= 0) {
+                delete config.data.widgets
+            }
+            config.save()
+        }
+        
+        rmdirSync(widgetPath)
     }
 
     watchWidgets() {

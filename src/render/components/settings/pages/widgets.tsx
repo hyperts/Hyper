@@ -16,10 +16,10 @@ function Widgets() {
         <div className={`mb-4 text-white`}>
             <h3 className={`text-2xl text-bold flex flex-row items-center`}><Icon.Box size={22} className={`mr-3`} /> Installed widgets</h3>
             <p className={`text-xs mt-1 font-light text-gray-300`}>This list contains your installed and detected widgets</p>
-            { DetectedWidgets.loadedWidgets.map( widget => {
+            {DetectedWidgets.loadedWidgets.map(widget => {
                 if (!widget) { return }
                 return <div className="flex flex-row items-center justify-center h-20 my-2 align-middle rounded-md select-none bg-secondary">
-                    <img src={widget.image ?? defaultImage} className='w-20 mr-3 rounded-l-md'draggable={false} />
+                    <img src={widget.image ?? defaultImage} className='w-20 mr-3 rounded-l-md' draggable={false} />
                     {/* <div id={`widget.${widget.name}.picture`}/>
                     <style>
                     {`
@@ -33,25 +33,38 @@ function Widgets() {
                     `}
                     </style> */}
                     <div className="flex flex-col">
-                        <h3 className="font-bold font-md">{widget.name}</h3>
+                        <h3 className="flex flex-row items-center font-bold font-md">{widget.name}</h3>
                         <span className="text-sm text-gray-400">{widget.description}</span>
                         <span className="text-xs text-gray-500">{widget.author ?? 'Unknown author'}</span>
                     </div>
-                    <button 
-                        className="ml-auto mr-3 text-red-300 transition-colors duration-300 hover:text-red-600"
-                        onClick={()=>{
-                            // TODO: Uninstall widget
-                        }}
-                    >
-                        <Icon.Trash2 />
-                    </button>
+                    <div className="ml-auto">
+                        {widget.repository &&
+                            <button
+                                className="px-2 py-2 mr-2 text-white transition-colors duration-300 rounded-md hover:text-blue-400 bg-primary"
+                                onClick={() => {
+                                }}
+                            >
+                                <Icon.Globe size={16} />
+                            </button>
+                        }
+                        <button
+                            className="px-2 py-2 mr-3 text-white transition-colors duration-300 rounded-md hover:text-red-600 bg-primary"
+                            onClick={() => {
+                                const widgetRepository = new WidgetRepository()
+
+                                widgetRepository.uninstallWidget(widget)
+                            }}
+                        >
+                            <Icon.Trash2 size={16} />
+                        </button>
+                    </div>
                 </div>
-            } )}
+            })}
         </div>
         <form className="flex flex-row w-full mt-auto">
-            <input type="file" className="hidden"/> 
+            <input type="file" className="hidden" />
             <div className="flex items-center justify-center w-full px-3 py-2 text-lg text-gray-500 border-2 border-dashed rounded-md select-none border-secondary">
-                <Icon.Upload size={22} className="mr-3"/> Drop a zip to install
+                <Icon.Upload size={22} className="mr-3" /> Drop a zip to install
             </div>
         </form>
     </main>
