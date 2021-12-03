@@ -32,11 +32,9 @@ export function loadWidgets() {
 
 
 export function loadTheme() {
-  const themeConfig = new Config('appearence.items.theme.fields.selected')
-  
   const style = document.createElement('link')
   style.setAttribute('rel', 'stylesheet')
-  style.setAttribute('href', `theme://${themeConfig.get('value')}/index.css`)
+  style.setAttribute('href', `theme://index.css`)
 
   document.head.appendChild(style)
 
