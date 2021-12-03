@@ -15,6 +15,7 @@ type ItemProps = {
 function Item( {name, click, active, icon, category, entry } : ItemProps) {
     //@ts-ignore
     const Glyph : ElementType = Icon[icon]
+
     return <>
         <li 
             className={`
@@ -32,7 +33,7 @@ function Item( {name, click, active, icon, category, entry } : ItemProps) {
                 if (click) { click(`${category}.${entry}`) }
             }}
         >
-            <Glyph size={16} strokeWidth={active ===  category + '.' + entry ? 3 : 2} className={`mr-3`} key/>
+            { Glyph && <Glyph size={16} strokeWidth={active ===  category + '.' + entry ? 3 : 2} className={`mr-3`} key/> }
             {name}
         </li>
     </>
