@@ -40,12 +40,10 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     })
     
     ipcMain.on('openSettings', () => {
-        console.log("Requesting to open settings window.")
         createSettingsWindow(windows)
     })
 
     ipcMain.on('closeSettings', () => {
-        console.log("Closing settings window")
         windows?.settings?.close()
     })
     
@@ -59,8 +57,12 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     });
 
     ipcMain.on('refreshApp', () => {
-        app.relaunch()
-        app.exit()
+        app?.relaunch()
+        app?.exit()
+    })
+
+    ipcMain.on('closeApp', () => {
+        app?.exit()
     })
 
     ipcMain.on('forceReload', () => { 
@@ -68,6 +70,25 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
             const window = windows[windowName]
             window?.webContents?.reloadIgnoringCache()
         }
+    })
+
+    ipcMain.on('getCursorPosition', (e, window) => {
+        const {x, y} = screen.getCursorScreenPoint()
+        if (window) {
+            window.webContents.send('sendCursorPosition', {x, y})
+            return
+        }
+        ipcMain.emit('sendCursorPosition', {x, y})
+    })
+
+    ipcMain.on('getScreenSize', (e, window) =>{
+        const primaryDisplay = screen.getPrimaryDisplay()
+        const { width: w, height: h } = primaryDisplay.workAreaSize
+        if (window) {
+            window.webContents.send('sendScreenSize', {w, h})
+            return
+        }
+        ipcMain.emit('sendScreenSize', {w, h})
     })
 }
 
