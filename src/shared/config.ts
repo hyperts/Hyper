@@ -106,7 +106,7 @@ export class Config {
     }
 
     this.getEntry = function (category: string, entry: string) {
-      const entryKey = entry.toLocaleLowerCase().replace(' ', '_')
+      const entryKey = entry.toLowerCase().split(' ').join('_')
       
       const stack = objSearch.get(this.data, `${category}.items.${entryKey}`) as ConfigItem
       return stack
@@ -133,7 +133,7 @@ export class Config {
     }
 
     this.insert = function( category,{name} ) {
-      const categoryKey = category.toLocaleLowerCase().replace(' ', '_')
+      const categoryKey = category.toLocaleLowerCase().split(' ').join('_')
 
       if (!this.data[categoryKey]) {
         this.data[categoryKey] = {
