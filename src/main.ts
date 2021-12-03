@@ -1,10 +1,10 @@
 import { app, protocol } from 'electron';
 import path, { dirname } from 'path';
 import WidgetRepository from './shared/widget';
+import { Config } from './shared/config'
 import { homedir } from 'os';
-import { createWindows } from './main/createwindows';
+import { createWindows, createSplash } from './main/createwindows';
 import startIPC from './main/ipc';
-import { createSplash } from './main/createwindows';
 
 import './main/checkdir';
 
@@ -30,7 +30,8 @@ app.on('ready', ()=>{
     
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
-        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${url}`) })
+        const themeConfig = new Config('appearence.items.theme.fields.selected')
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${themeConfig.get('value')}/${url}`) })
     })    
 
     protocol.registerFileProtocol('widgets', (request, callback) => {
