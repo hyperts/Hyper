@@ -1,5 +1,5 @@
 {
-    "version": "0.8.9",
+    "version": "0.9.1",
     "authors": "nodge",
     "name": "hyper",
     "description": "Hyper windows customization",
@@ -57,6 +57,7 @@
         "react": "^17.0.2",
         "react-color-palette": "^6.1.0",
         "react-dom": "^17.0.2",
+        "react-dropzone": "^11.4.2",
         "react-feather": "^2.0.9",
         "three-dots": "^0.2.1",
         "ws": "^8.3.0",

@@ -1,10 +1,16 @@
 // TODO: Allow widget creators to pick icon and/or image.
 
-import React from 'react';
+import React, { useState } from 'react';
+import Dropzone from '../dropZone';
 import * as Icon from 'react-feather';
 import WidgetRepository from './../../../../shared/widget'
 
-function Widgets() {
+interface WidgetPageProps {
+    change?: () => void;
+}
+
+function Widgets(props: WidgetPageProps) {
+    const [loading, setLoading] = useState(false)
     const defaultImage = "https://i.imgur.com/vccRW0H.png"
     const DetectedWidgets = new WidgetRepository()
     DetectedWidgets.loadWidgetsInPaths(true)
@@ -51,8 +57,10 @@ function Widgets() {
                             className="px-2 py-2 mr-3 text-white transition-colors duration-300 rounded-md hover:text-red-600 bg-primary"
                             onClick={() => {
                                 const widgetRepository = new WidgetRepository()
-
-                                widgetRepository.uninstallWidget(widget)
+                                widgetRepository.uninstallWidget(widget, () => {
+                                    window.location.reload()
+                                    props.change?.()
+                                })
                             }}
                         >
                             <Icon.Trash2 size={16} />
@@ -62,11 +70,22 @@ function Widgets() {
             })}
         </div>
         <form className="flex flex-row w-full mt-auto">
-            <input type="file" className="hidden" />
+            {/* <input type="file" className="hidden" />
             <div className="flex items-center justify-center w-full px-3 py-2 text-lg text-gray-500 border-2 border-dashed rounded-md select-none border-secondary">
-                <Icon.Upload size={22} className="mr-3" /> Drop a zip to install
-            </div>
+                
+            </div> */}
+            <Dropzone onDrop={(files: File[])=>{
+                setLoading(true)
+                const widgetRepository = new WidgetRepository()
+                widgetRepository.installWidget(files[0].path, ()=>{
+                    setLoading(false)
+                    props.change?.()
+                })
+            }}/>
         </form>
+        {
+            loading && <> </>
+        }
     </main>
 }
 

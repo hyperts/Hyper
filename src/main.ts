@@ -1,4 +1,4 @@
-import { app, protocol } from 'electron';
+import { app, protocol, dialog } from 'electron';
 import path, { dirname } from 'path';
 import WidgetRepository from './shared/widget';
 import { Config } from './shared/config'
@@ -11,6 +11,7 @@ import './main/checkdir';
 import log from 'electron-log'
 import {join} from 'path'
 const logger = log.scope('WIDGET')
+const mainLogger = log.scope('MAIN')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
 
 export const windows = {}
@@ -22,6 +23,10 @@ if (!app.isPackaged) require('electron-reload')(__dirname, {
         : path.join(dirname(__dirname), 'node_modules', '.bin', 'electron')
 })
 
+dialog.showErrorBox = (title, err) =>{
+    mainLogger.error(`Not managed exception in: ${title}\n      Error information:\n       ${err}`)
+}
+
 app.on('ready', ()=>{
     protocol.registerFileProtocol('assets', (request, callback) => {
         const url = request.url.substr(9)
@@ -31,7 +36,8 @@ app.on('ready', ()=>{
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
         const themeConfig = new Config('appearence.items.theme.fields.selected')
-        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${themeConfig.get('value')}/${url}`) })
+        console.log("Protocol theme, url:", `${homedir()}/.hyperbar/themes/${themeConfig.get('value')}${url}`);
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${themeConfig.get('value')}${url}`) })
     })    
 
     protocol.registerFileProtocol('widgets', (request, callback) => {

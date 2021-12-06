@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { homedir } from 'os';
-import { readdirSync, existsSync, readFileSync, lstatSync, rmdirSync } from 'fs';
+import { readdirSync, existsSync, readFileSync, lstatSync, unlinkSync, rmdirSync } from 'fs';
 import { Config } from './config';
 import chokidar from 'chokidar'
 //@ts-expect-error TODO: Make declaration files for adm-zip
@@ -8,6 +8,20 @@ import Zip from 'adm-zip';
 import log from 'electron-log'
 const logger = log.scope('WIDGET')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+
+function rimraf(dir_path: string) {
+    if (existsSync(dir_path)) {
+        readdirSync(dir_path).forEach(function(entry) {
+            var entry_path = join(dir_path, entry);
+            if (lstatSync(entry_path).isDirectory()) {
+                rimraf(entry_path);
+            } else {
+                unlinkSync(entry_path);
+            }
+        });
+        rmdirSync(dir_path);
+    }
+}
 
 type WidgetInfo = {
     image?: string, 
@@ -148,7 +162,7 @@ class WidgetRepository {
         return paths;
     }
 
-    installWidget(path: string) {
+    installWidget(path: string, callback?: (installedWidget: WidgetInfo) => void ) {
         if (!existsSync(path)) { logger.error(`Tried to install invalid widget file - Corrupted or missing :: ${path}`); return false; }
         if (!path.endsWith('.zip')) { logger.error(`This file is not a compressed folder - Skipping :: ${path}`); return false; }
 
@@ -158,7 +172,7 @@ class WidgetRepository {
         if (zipFile.getEntries().length <= 0) { logger.error(`Empty or corrupt zip file :: ${path}`); return false; }
 
         zipFile.getEntries().forEach(function (zipEntry: any) { // TODO: Declaration files for adm-zip
-            if (zipEntry.entryName == "package.json") {
+            if (zipEntry.entryName.endsWith("package.json")) {
                 widgetData = zipFile.readAsText(zipEntry)
             }
         });
@@ -168,10 +182,13 @@ class WidgetRepository {
         zipFile.extractAllTo(this.widgetPaths[0], true)
         
         logger.debug(`Installed widget - ${JSON.parse(widgetData).name}`)
+        callback?.(JSON.parse(widgetData))
+        
         return JSON.parse(widgetData)
     }
 
-    uninstallWidget(widget: WidgetObject) {
+    uninstallWidget(widget: WidgetObject, callback?: () => void) {
+        console.log("Called to uninstall widget:", widget.name)
         const directory = widget.file.split('\\widgets\\')
         console.log("Directory name", directory)
         const widgetPath = join(homedir(), '.hyperbar', 'widgets', directory[directory.length -1].split('\\')[0])
@@ -210,7 +227,8 @@ class WidgetRepository {
             config.save()
         }
         
-        rmdirSync(widgetPath)
+        rimraf(widgetPath)
+        callback?.()
     }
 
     watchWidgets() {
@@ -244,6 +262,17 @@ class WidgetRepository {
                 electron.app.relaunch()
                 electron.app.exit()
             }
+        })
+    }
+
+    loadStyles() {
+        this.loadedWidgets.map( widget =>{
+            widget.styles?.forEach( style => {
+                const head = document.querySelector('head')
+                const directory = widget.file.split('\\widgets\\')
+
+                if (head) { head.innerHTML += `<link rel="stylesheet" href="widgets://${directory[directory.length -1].split('\\')[0]}/${style}" type="text/css"/>`; }
+            })
         })
     }
 }

@@ -1,40 +1,44 @@
-import React, {useEffect} from "react"
+import React, {useLayoutEffect} from "react"
 import ReactDOM from "react-dom"
 
 import '../style/index.css';
 
 //@ts-ignore
-import {loadWidgets, loadTheme} from '../utils'
-
-// import { openSettings } from '../ipc';
-
-// import {Zap} from 'react-feather'
+import {loadWidgets, loadThemes} from '../utils'
+import {openSettings} from '../ipc'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
 
 function App() {
-
     const loadedWidgets = loadWidgets()
-    
-    useEffect(() => {
-        loadedWidgets.map( widget =>{
-            widget.styles?.forEach( style => {
-                const head = document.querySelector('head')
-                const directory = widget.file.split('\\widgets\\')
 
-                if (head) { head.innerHTML += `<link rel="stylesheet" href="widgets://${directory[directory.length -1].split('\\')[0]}/${style}" type="text/css"/>`; }
-            })
-        })
-        loadTheme()
+    useLayoutEffect(() => {
+        loadThemes()
     }, [])
 
-
     return <div id="hyperbar" className="flex flex-row">
-        {
-            loadedWidgets.map(widget =>{
-                return widget.default()
-            })
-        }
+        { loadedWidgets.map(widget =>{
+            if (typeof widget.default === 'function') {
+                //@ts-expect-error
+                return <widget.default key={widget.name}/>
+            }
+        }) }
+        {/* Using plain CSS, just in case there's also no themes loaded... for some reason */}
+        {loadedWidgets.length <= 0 && 
+        <div 
+            style={{
+                mixBlendMode: 'difference', 
+                color: 'white', 
+                padding: 6, 
+                fontWeight: 'normal', 
+                width: '100%', 
+                textAlign: 'center',
+                cursor: 'pointer'
+            }}
+            onClick={openSettings}
+        >
+           No widget loaded - Click to open settings
+        </div>}
     </div>
 }

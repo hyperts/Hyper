@@ -17,10 +17,10 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 function App() {
     const [active, SetActive] = useState('hyper_widgets.special');
-    const [refreshPeding, setPeding] = useState(false)
+    const [refreshPending, setPending] = useState(false)
 
     function settingChanged() {
-        setPeding(true)
+        setPending(true)
     }
 
     function pageChange(category: string) {
@@ -33,9 +33,9 @@ function App() {
                 return <About />
                 break;
             case 'hyper_themes.special':
-                return <Themes />
+                return <Themes change={settingChanged} />
             case 'hyper_widgets.special':
-                return <Widgets />
+                return <Widgets change={settingChanged} />
             default:
                 return <Dynamic active={active} change={settingChanged}/>
         }
@@ -47,7 +47,7 @@ function App() {
             <Sidebar active={active} onChange={pageChange}/>
             <div className={`flex flex-col w-full px-4 py-12 bg-bg rounded-r-md relative overflow-auto`} >
                 {renderPage()}
-                {refreshPeding && <RefreshPrompt />}
+                {refreshPending && <RefreshPrompt />}
 
             </div>
         </div>
