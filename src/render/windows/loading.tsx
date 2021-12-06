@@ -9,7 +9,8 @@ interface LoadingProps {
 }
 
 interface LoadingStates {
-    artwork: {image: string, name: string, link: string, author: string}
+    artwork: {image: string, name: string, link: string, author: string},
+    phrase: string
 }
 
 class App extends React.Component<LoadingProps, LoadingStates> {
@@ -17,14 +18,14 @@ class App extends React.Component<LoadingProps, LoadingStates> {
     constructor(props: LoadingProps) {
         super(props)
         this.state = {
-            artwork: {image:'', author: '', link: '', name: ''}
+            artwork: {image:'', author: '', link: '', name: ''},
+            phrase: ""
         }
     }
    
     componentWillMount() {
         axios.get('https://raw.githubusercontent.com/hyperts/hyperassets/main/loadingartwork.json') // TODO: Move this to .env?
         .then((response)=>{
-            console.log("Response", response)
             const artworkList = response.data
             const random = Math.floor(Math.random() * artworkList.length);
             this.setState({
@@ -35,10 +36,18 @@ class App extends React.Component<LoadingProps, LoadingStates> {
                     author: artworkList[random].author
                 }
             })
-            console.log("State changed to", this.state.artwork)
         })
         .catch((err)=>{
             console.log(err)
+        })
+
+        axios.get('https://raw.githubusercontent.com/hyperts/hyperassets/main/loadingquotes.json')
+        .then((response)=>{
+            const phraseList = response.data
+            const random = Math.floor(Math.random() * phraseList.length);
+            this.setState({
+                phrase: phraseList[random]
+            })
         })
     }
 
@@ -54,7 +63,7 @@ class App extends React.Component<LoadingProps, LoadingStates> {
                     </div>
                     <div className={`absolute bottom-16 w-full text-center dragger`}>
                         <h3 className={`text-xl dragger`}>Hyper is loading</h3>
-                        <p className={`text-gray-500 text-sm dragger`}>A chicken's flight record is 13 seconds</p>
+                        <p className={`text-gray-500 text-sm dragger`}>{this.state.phrase}</p>
                     </div>
                     <span className={`text-subtle absolute bottom-1 w-full text-center text-xs dragger`}>Artwork: {this.state.artwork.name} by {this.state.artwork.author}</span>
                 </div>
