@@ -3,9 +3,10 @@
 <p  align="center">
 <img src="https://img.shields.io/badge/PLATFORM-Windows%20x64-%2300A3FF?style=flat-square&logo=window"/> <img src="https://img.shields.io/discord/907771843954503710?color=%2300A9FF&label=Discord&logo=discord&logoColor=%23ffffff&style=flat-square"/> 
 </p>
+
 # Hyperbar - Hackable modern topbar for windows.
 
-Hyper is built entirely on webtech and aims to be customizable to the extreme.
+Hyper is built entirely on webtech and aims to be customizable to the extreme.<br>
 Hyper by itself does nothing, all of it's power is concentrated on widgets that extends it's capacity.
 
 Visit my [Discord server](https://discord.gg/xCmjx4SSZq)<br>
