@@ -10,6 +10,9 @@ import './main/checkdir';
 
 import log from 'electron-log'
 import {join} from 'path'
+import ThemeRepository from './shared/theme';
+import {makeAppBar} from './main/utils'
+
 const logger = log.scope('WIDGET')
 const mainLogger = log.scope('MAIN')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
@@ -27,7 +30,9 @@ dialog.showErrorBox = (title, err) =>{
     mainLogger.error(`Not managed exception in: ${title}\n      Error information:\n       ${err}`)
 }
 
-app.on('ready', ()=>{
+app.on('ready', async ()=>{
+    await makeAppBar()
+
     protocol.registerFileProtocol('assets', (request, callback) => {
         const url = request.url.substr(9)
         callback({ path: path.normalize(`${__dirname}/assets/${url}`) })
@@ -36,15 +41,14 @@ app.on('ready', ()=>{
     protocol.registerFileProtocol('theme', (request, callback) => {
         const url = request.url.substr(7)
         const themeConfig = new Config('appearence.items.theme.fields.selected')
-        console.log("Protocol theme, url:", `${homedir()}/.hyperbar/themes/${themeConfig.get('value')}${url}`);
         callback({ path: path.normalize(`${homedir()}/.hyperbar/themes/${themeConfig.get('value')}${url}`) })
     })    
 
     protocol.registerFileProtocol('widgets', (request, callback) => {
         const url = request.url.substr(10)
-        console.log("Protocol widget, url:", path.normalize(`${homedir()}/.hyperbar/widgets/${url}`))
         callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${url}`) })
     })    
+    
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
@@ -61,6 +65,8 @@ app.on('ready', ()=>{
         --> Main? ${widget.main}
         --> Renderer? ${widget.renderer}`)
     })
+    const themeRepository = new ThemeRepository();
+    themeRepository.setVars()
 
     setTimeout(() => { 
         createWindows(windows) // Creates main app windows [Main, Settings]

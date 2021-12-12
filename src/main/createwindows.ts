@@ -1,6 +1,6 @@
 import { app, BrowserWindow, shell } from "electron";
 import { Config } from '../shared/config';
-import { stringToHex, generateBounds } from './utils';
+import { stringToHex, generateBounds, removeAppBar } from './utils';
 import ewc from 'ewc';
 
 import log from 'electron-log'
@@ -10,9 +10,9 @@ const logger = log.scope('WINDOW')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
 
 
-export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
-  
-    const configBehaviour = new Config("general.items.behaviour.fields") 
+export async function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
+
+    const configBehavior = new Config("general.items.behavior.fields") 
     const configComposition = new Config("appearence.items.composition.fields")
     const mainBounds = generateBounds()
 
@@ -23,7 +23,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
         x: mainBounds.x,
         y: mainBounds.y,
         minimizable: false,
-        alwaysOnTop: configBehaviour.get("always-on-top.value"),
+        alwaysOnTop: configBehavior.get("always-on-top.value"),
         thickFrame: false,
         backgroundColor: '#00000000',
         hasShadow: false,
@@ -78,6 +78,7 @@ export function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
 
     
     windows.main.on('close', (e)=>{
+        removeAppBar()
         e.preventDefault();
         app.quit();
         process.exit(0);

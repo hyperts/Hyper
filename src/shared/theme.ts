@@ -1,5 +1,5 @@
 import chokidar from 'chokidar'
-import electron from 'electron'
+import {ipcRenderer, app} from 'electron'
 import { Config } from './config'
 import { readdirSync, existsSync, readFileSync, lstatSync } from 'fs'
 import log from 'electron-log'
@@ -37,12 +37,7 @@ class ThemeRepository {
     this.installedThemes = []
   }
 
-  private setVars() {
-    if (!this.isRenderer) {
-      logger.error('This function can only be called from the renderer process')
-      return
-    }
-
+  public setVars() {
     const dockedTop = this.config.getValue('general', 'position', 'dock-pos') === 'top'
     const barHeight = this.config.getValue('appearence', 'sizes', 'height') as number
     const barPadding = this.config.getValue('appearence', 'sizes', 'padding') as number
@@ -62,6 +57,21 @@ class ThemeRepository {
     this.varList.push({ name: 'accent', value: accentColor })
     this.varList.push({ name: 'primary', value: primaryColor })
     this.varList.push({ name: 'secondary', value: secondaryColor })
+
+    if (!this.isRenderer) {
+      app.on('browser-window-created', (e, window) => {
+        const cssStr = this.varList.map( variable => {
+          return `--${variable.name}: ${variable.value}`
+        })
+        window.webContents.insertCSS(`
+          :root {
+            ${cssStr.join(';')}
+          }
+        `)
+      })
+      
+      return
+    }
   }
 
   setup() {
@@ -74,6 +84,8 @@ class ThemeRepository {
     style.setAttribute('href', `theme://index.css`)
   
     document.head.appendChild(style)
+    
+    this.watchTheme()
   }
 
   install() {
@@ -152,7 +164,7 @@ class ThemeRepository {
 
     const watcher = chokidar.watch(this.themesPath)
 
-    watcher.on('change', () => { electron.ipcRenderer.send('forceReload') })
+    watcher.on('change', () => { ipcRenderer.send('forceReload') })
 
   }
 
