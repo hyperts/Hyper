@@ -1,22 +1,22 @@
 import { homedir } from 'os';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import log from 'electron-log'
 const homePath : String = homedir()
+const logger = log.scope('DIRECTORY')
 
 let firstRun = false
 
 if ( existsSync(`${homePath}\\.hyperbar`) ) {
-    console.log("Found hyper directory on user home folder",  `${homePath}\\.hyperbar`)
+    logger.info('Hyper directory alredy exists - Skipping first steps')
 } else {
-    console.log("First run detected! Creating hyper directory on", `${homePath}\\.hyperbar`)
+    logger.debug(`First run detected! Creating hyper directories on: ${homePath}\\.hyperbar`)
     mkdirSync(`${homePath}\\.hyperbar`)
-    console.log("Creating widgets folder")
     mkdirSync(`${homePath}\\.hyperbar\\widgets`)
-    console.log("Creating themes folder")
     mkdirSync(`${homePath}\\.hyperbar\\themes`)
     firstRun = true
 }
 
 if (firstRun || !existsSync(`${homePath}\\.hyperbar\\config.yaml`)) {
-    console.log("Config file not found: Creating base config file on home directory")
+    logger.debug("Config file not found: Creating base config file on home directory")
     writeFileSync(`${homePath}\\.hyperbar\\config.yaml`, readFileSync(`${__dirname}/assets/defaultConfig.yaml`).toString())
 }
