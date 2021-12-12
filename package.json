@@ -69,7 +69,10 @@
     "config": {
         "forge": {
             "packagerConfig": {
-                "dir": "dist"
+                "dir": "dist",
+                "protocols":[
+                    {"name": "Hyper Exntension point", "schemes": ["hyper-install"]}
+                ]
             },
             "makers": [
                 {
@@ -86,7 +89,9 @@
                 },
                 {
                     "name": "@electron-forge/maker-deb",
-                    "config": {}
+                    "config": {
+                        "mimeType": ["x-scheme-handler/hyper-install"]
+                    }
                 },
                 {
                     "name": "@electron-forge/maker-rpm",
