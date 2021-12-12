@@ -40,6 +40,12 @@ export async function createWindows( windows: {[key: string]:BrowserWindow|null 
 
     windows.main.loadFile('./dist/index.html')
    
+    setInterval(()=>{
+        const currentPos = windows?.main?.getPosition()
+        if (currentPos && currentPos[0] != mainBounds.x || currentPos && currentPos[1] != mainBounds.y) {
+            windows.main?.setPosition(mainBounds.x, mainBounds.y)
+        }
+    }, 5000)
 
     switch (configComposition.get("effect.value")) {
         case "acrylic":
@@ -111,7 +117,6 @@ export function createSplash(windows: {[key: string]:BrowserWindow}) {
     })
     ewc.setTransparentGradient(windows.splash, 0x0000000)
     windows.splash.loadFile('./dist/loading.html')
-
 }
 
 export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null }) {
@@ -136,7 +141,6 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
                 contextIsolation: false,
             }
         })
-        
         
         windows.settings.webContents.on('new-window', function (e, url) {
             e.preventDefault()
@@ -184,6 +188,17 @@ export function createExtensionWindow(windows: {[key:string]:BrowserWindow|null}
         windows?.extension.show()
     }
 
+    windows.extension.on('close', (e)=>{
+        delete windows.extension
+      })
+
+    windows.extension.on('ready-to-show', function(){
+        if (!firstTime) {
+            windows.extension?.webContents.send('extensionWindowHideTutorial')
+        }
+    
+    })
+    
     windows.extension.loadFile('./dist/extension.html')
 
     windows.extension.on('ready-to-show', function(){
