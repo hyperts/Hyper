@@ -5,7 +5,7 @@ import '../style/index.css';
 
 //@ts-ignore
 import {loadWidgets, loadThemes} from '../utils'
-import {openSettings} from '../ipc'
+import {openSettings, openContext} from '../ipc'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
@@ -17,7 +17,11 @@ function App() {
         loadThemes()
     }, [])
 
-    return <div id="hyperbar" className="flex flex-row">
+    return <div id="hyperbar" className="flex flex-row"   onContextMenu ={(e)=>{
+        if (e.ctrlKey) {
+            openContext()
+        }
+      }}>
         { loadedWidgets.map(widget =>{
             if (typeof widget.default === 'function') {
                 //@ts-expect-error
