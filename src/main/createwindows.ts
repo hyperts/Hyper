@@ -147,11 +147,46 @@ export function createSettingsWindow(windows: {[key: string]:BrowserWindow|null 
         ewc.setAcrylic(windows.settings, 0x21212120)
     
         windows.settings.on('ready-to-show', function(){
-            console.debug("Created Settings window")
+            logger.info('Settings window registered & Ready to show')
         })
         
         windows.settings.on('close', (e)=>{
           delete windows.settings
         })
+    } else {
+        windows?.settings.show()
     }
+}
+
+export function createExtensionWindow(windows: {[key:string]:BrowserWindow|null}, firstTime: boolean) {
+    if (!windows.extension) {
+        windows.extension = new BrowserWindow({
+            width: 900,
+            height: 600,
+            show: true, 
+            frame: false,
+            minimizable: true,
+            thickFrame: false,
+            hasShadow: false,
+            backgroundColor: '#00000000',
+            minWidth: 800,
+            minHeight: 500,
+            skipTaskbar: false,
+            focusable: true,
+            fullscreenable: true,
+            maximizable: true,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+            }
+        })
+    } else {
+        windows?.extension.show()
+    }
+
+    windows.extension.loadFile('./dist/extension.html')
+
+    windows.extension.on('ready-to-show', function(){
+        logger.info('Extension window registered & Ready to show')
+    })
 }
