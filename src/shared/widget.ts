@@ -69,8 +69,7 @@ class WidgetRepository {
                 config: new Config(),
                 api: {
                     ipcRenderer: electron.ipcRenderer,
-                },
-                body: document.getElementById('hyperbar')
+                }
             }
 
         }
