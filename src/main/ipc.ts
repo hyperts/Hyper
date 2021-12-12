@@ -1,10 +1,11 @@
-import {app, BrowserWindow, ipcMain, screen} from 'electron'
+import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
 import {createSettingsWindow} from './createwindows'
 import { WebSocketServer } from 'ws'
 import {HSWWData} from '../@types/hyper'
 import log from 'electron-log'
 import {homedir} from 'os'
 import {join} from 'path'
+import {Config} from '../shared/config'
 const logger = log.scope("IPC")
 
 log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
@@ -20,8 +21,13 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
             // console.log("HYPER :: WEBSOCKET :: Received message => ".concat(message));
             logger.debug(`Websocket message: ${message}`)
             try {
-                const data = JSON.parse(message) as HSWWData            
-                windows?.main.webContents.send(`hws_${data.Event}`, data)
+                const data = JSON.parse(message) as HSWWData           
+                Object.keys(windows).forEach( name => {
+                    const windowObj = windows[name]
+                    if (windowObj) {
+                        windowObj.webContents.send(`hws_${data.Event}`, data)
+                    }
+                })
             } catch {
                 console.log("Invalid json", String(message) )
             }
@@ -94,6 +100,28 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         }
         ipcMain.emit('sendScreenSize', {w, h})
     })
+
+    ipcMain.on('show-context-menu', (event) => {
+        // Create context menu on message
+        const template = [
+          { label: 'Restart Hyper', click: () => { ipcMain.emit('refreshApp') } },
+          { label: 'Close Hyper', click: () => { ipcMain.emit('closeApp') } },
+          { type: 'separator' },
+          { label: 'Open Settings', click: () => { ipcMain.emit('openSettings') } },
+          { label: 'HyperTS - Hyper '}
+        ]
+    
+        const config = new Config()
+        // If the user settings doesn't allow to display debug settings
+        // then we just remove it from the array.
+        if (!config.getValue('general','misc', "context-menu")) {
+          delete template[0]
+          delete template[1]
+        }
+        //@ts-expect-error
+        const menu = Menu.buildFromTemplate(template)
+        menu.popup()
+      })
 }
 
 export default startIPC;
