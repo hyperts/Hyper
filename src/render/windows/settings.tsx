@@ -16,7 +16,7 @@ import Dynamic from '../components/settings/pages/default';
 ReactDOM.render(<App />, document.getElementById('root'))
 
 function App() {
-    const [active, SetActive] = useState('hyper_widgets.special');
+    const [active, SetActive] = useState('hyper_about.special');
     const [refreshPending, setPending] = useState(false)
 
     function settingChanged() {
