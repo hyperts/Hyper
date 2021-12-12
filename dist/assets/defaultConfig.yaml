@@ -1,8 +1,8 @@
 general:
   name: General
   items:
-    behaviour:
-      name: Behaviour
+    behavior:
+      name: Behavior
       description: Change how hyper reacts to your desktop.
       icon: Monitor
       fields:
