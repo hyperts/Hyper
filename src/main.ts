@@ -26,6 +26,14 @@ if (!app.isPackaged) require('electron-reload')(__dirname, {
         : path.join(dirname(__dirname), 'node_modules', '.bin', 'electron')
 })
 
+const gotTheLock = app.requestSingleInstanceLock()
+
+
+if (!gotTheLock) {
+  dialog.showErrorBox('Failed to initialize Hyper', `Hyper attempted to kill other instances of itself and failed\n - This means:\n -- Another instance of hyper is open, try and close it via a task manager.\n -- A Widget is trying to control hyper initializing process, remove your latest installed widget\n -- Hyper developers are insane, contact them.`)
+  app.quit()
+}
+
 dialog.showErrorBox = (title, err) =>{
     mainLogger.error(`Not managed exception in: ${title}\n      Error information:\n       ${err}`)
 }
@@ -49,6 +57,14 @@ app.on('ready', async ()=>{
         callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${url}`) })
     })    
     
+    if (process.defaultApp) {
+        if (process.argv.length >= 3) {
+            app.setAsDefaultProtocolClient('hyper-install', process.execPath, [path.resolve(process.argv[1], process.argv[2])])
+        }
+
+    } else {
+        app.setAsDefaultProtocolClient('hyper-install')
+    }
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
