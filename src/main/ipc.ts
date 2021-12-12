@@ -1,5 +1,5 @@
 import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
-import {createSettingsWindow} from './createwindows'
+import { createSettingsWindow, createExtensionWindow } from './createwindows';
 import { WebSocketServer } from 'ws'
 import {HSWWData} from '../@types/hyper'
 import log from 'electron-log'
@@ -51,6 +51,10 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     
     ipcMain.on('openSettings', () => {
         createSettingsWindow(windows)
+    })
+
+    ipcMain.on('openExtensions', () => {
+        createExtensionWindow(windows, false)
     })
 
     ipcMain.on('closeSettings', () => {
