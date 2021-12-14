@@ -5,7 +5,7 @@ import '../style/index.css';
 
 //@ts-ignore
 import {loadWidgets, loadThemes} from '../utils'
-import {openSettings, openContext} from '../ipc'
+import {openExtensions, openContext} from '../ipc'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
@@ -40,9 +40,9 @@ function App() {
                 textAlign: 'center',
                 cursor: 'pointer'
             }}
-            onClick={openSettings}
+            onClick={openExtensions}
         >
-           No widget loaded - Click to open settings
+           HYPERBAR - CLICK HERE TO START ⚡
         </div>}
     </div>
 }
