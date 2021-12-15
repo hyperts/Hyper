@@ -12,3 +12,7 @@ export function openContext() {
 export function refresh() {
     ipcRenderer.send('refreshApp')
 }
+
+export function openExtensions() {
+    ipcRenderer.send('openExtensions', true)
+}

@@ -3,11 +3,10 @@ import { homedir } from 'os';
 import { readdirSync, existsSync, readFileSync, lstatSync, unlinkSync, rmdirSync } from 'fs';
 import { Config } from './config';
 import chokidar from 'chokidar'
-//@ts-expect-error TODO: Make declaration files for adm-zip
 import Zip from 'adm-zip';
 import log from 'electron-log'
 const logger = log.scope('WIDGET')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 function rimraf(dir_path: string) {
     if (existsSync(dir_path)) {
@@ -23,7 +22,7 @@ function rimraf(dir_path: string) {
     }
 }
 
-type WidgetInfo = {
+export type WidgetInfo = {
     image?: string, 
     name:string, 
     author?:string, 
@@ -187,13 +186,9 @@ class WidgetRepository {
     }
 
     uninstallWidget(widget: WidgetObject, callback?: () => void) {
-        console.log("Called to uninstall widget:", widget.name)
         const directory = widget.file.split('\\widgets\\')
-        console.log("Directory name", directory)
         const widgetPath = join(homedir(), '.hyperbar', 'widgets', directory[directory.length -1].split('\\')[0])
-        console.log("Path", widgetPath)
         const widgetPathPackageJson = join(widgetPath, 'package.json');
-        console.log("JSON", widgetPathPackageJson)
         if (!existsSync(widgetPath)) {
             logger.error(`Path [${widgetPath}] is invalid`);
             return;
@@ -215,10 +210,8 @@ class WidgetRepository {
         const config = new Config()
         
         const entryName = widgetInfo.hypersettings.name.toLowerCase().split(' ').join('_')
-        console.log("Entry", entryName)
 
         if (config.getEntry('widgets', entryName)) {
-            console.log("Found on entry")
             delete config.data.widgets.items[entryName]
             if (config.data.widgets.items.length <= 0) {
                 delete config.data.widgets
@@ -235,8 +228,6 @@ class WidgetRepository {
         const watchWidgets = config.getValue('general', 'misc', 'watch-widgets')
         if (!watchWidgets) { return }
         
-        console.log("Watching files")
-
         const watchList: string[] = []
         this.loadedWidgets.forEach( widget => {
             watchList.push(widget.file)
@@ -249,7 +240,7 @@ class WidgetRepository {
         })
 
         const watcher = chokidar.watch(watchList)
-        console.log("Watching for files:", watchList)
+        logger.info("Watching widget entries:", watchList.join(', ') )
         
         const electron = require('electron');
 

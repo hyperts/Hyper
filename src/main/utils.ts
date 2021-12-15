@@ -6,7 +6,7 @@ import { execSync, execFile } from 'child_process'
 
 import { Config } from '../shared/config';
 const logger = log.scope('WINDOW')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 export function stringToHex(color: string){
     return Number(color.replace("#", "0x")) || 0x000000
@@ -37,8 +37,6 @@ export function generateBounds() {
             : height - barHeight - verticalMargin 
     }
 
-    logger.log(`Calculated: x:${calculated.x} y:${calculated.y} w:${calculated.width} h:${calculated.height}`)
-
     return calculated
 
 }
@@ -61,16 +59,18 @@ export function makeAppBar() {
         const reservedSpace = config.getValue('appearence', 'sizes', 'height') as number
         const reservedMargin = config.getValue('general', 'position', 'vertical-margin') as number
         const dockPos = config.getValue('general', 'position', 'dock-pos')
-
+        logger.info("Initializing space reservation")
         endAppBar()
         setTimeout(()=>{
             const exeLocation = resolve(__dirname, 'bin', 'Hyper Spacer.exe')
             execFile(`${exeLocation}`, [String(reservedSpace + reservedMargin * 2),`${shouldDock ? dockPos == "top" ? 'Top' : 'Bottom' : 0}`]) // Change size or set to 0
+            logger.log("Space reserved!", String(reservedSpace + reservedMargin * 2),`${shouldDock ? dockPos == "top" ? 'Top' : 'Bottom' : 0}`)
             resolvePromise(true)
-        }, 300)
+        }, 100)
 
         setTimeout(()=>{ // It's hanging? start hyper without reserving spaces.
             rejectPromise()
+            logger.error("Failed space reservation")
         }, 5000)
     })
 

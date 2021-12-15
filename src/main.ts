@@ -15,7 +15,7 @@ import {makeAppBar} from './main/utils'
 
 const logger = log.scope('WIDGET')
 const mainLogger = log.scope('MAIN')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 export const windows = {}
 
@@ -30,7 +30,7 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 
 if (!gotTheLock) {
-  dialog.showErrorBox('Failed to initialize Hyper', `Hyper attempted to kill other instances of itself and failed\n - This means:\n -- Another instance of hyper is open, try and close it via a task manager.\n -- A Widget is trying to control hyper initializing process, remove your latest installed widget\n -- Hyper developers are insane, contact them.`)
+  dialog.showErrorBox('Failed to initialize Hyper', `Hyper attempted to kill other instances of itself and failed\n - Probably:\n -- Another instance of hyper is open, try and close it via a task manager.\n -- A Widget is trying to control hyper initializing process, remove your latest installed widget\n -- Hyper developers are insane, contact them.\n\n -- Restarting hyper may resolve your problem`)
   app.quit()
 }
 
@@ -68,7 +68,6 @@ app.on('ready', async ()=>{
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
-    
     // We give widgets 2 seconds before showing the main window, this helps with image loading :D
     // creators of weather and music widgets will appreciate this.
     

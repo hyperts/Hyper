@@ -7,7 +7,7 @@ import log from 'electron-log'
 import {homedir} from 'os'
 import {join} from 'path'
 const logger = log.scope('WINDOW')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 
 export async function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
