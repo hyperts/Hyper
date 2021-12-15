@@ -17,11 +17,16 @@ function App() {
         loadThemes()
     }, [])
 
-    return <div id="hyperbar" className="flex flex-row"   onContextMenu ={(e)=>{
-        if (e.ctrlKey) {
-            openContext()
-        }
-      }}>
+    return <div 
+        id="hyperbar" 
+        className="flex flex-row"   
+        onContextMenu ={(e)=>{
+            if (e.ctrlKey) {
+                openContext()
+            }
+        }}
+        style={{marginTop: 'var(--offset)'}}
+    >
         { loadedWidgets.map(widget =>{
             if (typeof widget.default === 'function') {
                 //@ts-expect-error
@@ -38,7 +43,7 @@ function App() {
                 fontWeight: 'normal', 
                 width: '100%', 
                 textAlign: 'center',
-                cursor: 'pointer'
+                cursor: 'pointer',
             }}
             onClick={openExtensions}
         >
