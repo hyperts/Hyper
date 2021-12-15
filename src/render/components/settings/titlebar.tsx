@@ -22,7 +22,7 @@ function onMouseUp(e: any) {
 }
 
 function moveWindow() {
-  ipcRenderer.send('windowMoving', { mouseX, mouseY });
+  ipcRenderer.send('moveSettingsWindow', { mouseX, mouseY });
   animationId = requestAnimationFrame(moveWindow);
 }
 

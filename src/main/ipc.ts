@@ -8,7 +8,7 @@ import {join} from 'path'
 import {Config} from '../shared/config'
 const logger = log.scope("IPC")
 
-log.transports.file.resolvePath = () => join(homedir(), '.hyperbar/logs/main.log');
+log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 function startIPC(windows: {[key: string]: BrowserWindow}) {
     logger.debug("Initializing")
@@ -18,8 +18,6 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     wss.on('connection', function (ws) {
     
         ws.on('message', function (message: string) {
-            // console.log("HYPER :: WEBSOCKET :: Received message => ".concat(message));
-            logger.debug(`Websocket message: ${message}`)
             try {
                 const data = JSON.parse(message) as HSWWData           
                 Object.keys(windows).forEach( name => {
@@ -29,12 +27,12 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
                     }
                 })
             } catch {
-                console.log("Invalid json", String(message) )
+                logger.error("Invalid JSON received via IPC WS")
             }
         })
     
         wss.on('close', function (this) {
-            console.log("Connection was closed")
+            logger.error("Connection closed -> <-")
         })
 
         // Listen to sendSocket only when socket state is READY (1)
@@ -53,9 +51,25 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         createSettingsWindow(windows)
     })
 
-    ipcMain.on('openExtensions', () => {
-        createExtensionWindow(windows, false)
+    ipcMain.on('openExtensions', (e, tutorial?: boolean) => {
+        createExtensionWindow(windows, tutorial ?? false)
     })
+
+    ipcMain.on('showWelcomeScreen', ()=>{
+        createExtensionWindow(windows, true)
+    })
+
+    ipcMain.on('extensionWindowHideTutorial', (e) =>{
+        if (windows.extension) {
+            windows.extension.webContents.send('extensionWindowHideTutorial')
+            return
+        }
+    })
+
+    ipcMain.on('closeExtensionWindow', () => {
+        windows?.extension?.close()
+    })
+    
 
     ipcMain.on('closeSettings', () => {
         windows?.settings?.close()
@@ -65,9 +79,14 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
     
     })
     
-    ipcMain.on('windowMoving', (e, {mouseX, mouseY}: {mouseX: number, mouseY:number} ) => {
+    ipcMain.on('moveSettingsWindow', (e, {mouseX, mouseY}: {mouseX: number, mouseY:number} ) => {
         const { x, y } = screen.getCursorScreenPoint()
         windows.settings.setPosition(x - mouseX, y - mouseY)
+    });
+
+    ipcMain.on('moveExtensionWindow', (e, {mouseX, mouseY}: {mouseX: number, mouseY:number} ) => {
+        const { x, y } = screen.getCursorScreenPoint()
+        windows.extension.setPosition(x - mouseX, y - mouseY)
     });
 
     ipcMain.on('refreshApp', () => {
@@ -111,8 +130,10 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
           { label: 'Restart Hyper', click: () => { ipcMain.emit('refreshApp') } },
           { label: 'Close Hyper', click: () => { ipcMain.emit('closeApp') } },
           { type: 'separator' },
+          { label: 'Open Store', click: () =>{ ipcMain.emit('openExtensions', true) } },
           { label: 'Open Settings', click: () => { ipcMain.emit('openSettings') } },
-          { label: 'HyperTS - Hyper '}
+          { type: 'separator' },
+          { label: 'Hyper - Beta release'}
         ]
     
         const config = new Config()
