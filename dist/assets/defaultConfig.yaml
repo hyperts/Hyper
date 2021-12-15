@@ -56,12 +56,18 @@ general:
           description: When enabled, hyper will reload itself when a change is detected on
             widget files
           type: checkbox
-          value: true
+          value: false
+        watch-themes:
+          name: Watch for theme changes
+          description: When enabled, hyper will reload the theme when a change is detected
+            on themes directory
+          type: checkbox
+          value: false
         context-menu:
           name: Context menu
           description: When enabled, the hyper context menu will include debug actions.
           type: checkbox
-          value: false
+          value: true
 appearence:
   name: Appearence
   items:
@@ -93,7 +99,7 @@ appearence:
         effect:
           name: Composition Effect
           description: The desired effect
-          type: selection
+          type: acrylic
           options:
             - acrylic
             - blur
@@ -119,7 +125,7 @@ appearence:
           name: Padding
           description: Internal margin (theme needs to support)
           type: number
-          value: 8
+          value: 6
     theme:
       name: Theme
       description: Theming options
