@@ -27,7 +27,7 @@ class ThemeRepository {
   private isRenderer: boolean
   private config: Config
   public varList: CssVar[]
-  private installedThemes: Theme[]
+  public installedThemes: Theme[]
   public activeTheme: Theme | undefined;
 
   constructor() {

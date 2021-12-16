@@ -70,7 +70,7 @@ const Welcome = () => {
             onClick={()=>{
               setcurrentPage(currentPage + 1 > Pages.length - 1 ? Pages.length - 1 : currentPage + 1)
               if (currentPage + 1 > Pages.length - 1 ) {
-                ipcRenderer.send('extensionWindowHideTutorial')
+                ipcRenderer.send('refreshExtensionWindow')
               }
             }}
           >

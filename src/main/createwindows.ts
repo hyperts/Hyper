@@ -196,7 +196,6 @@ export function createExtensionWindow(windows: {[key:string]:BrowserWindow|null}
         if (!firstTime) {
             windows.extension?.webContents.send('extensionWindowHideTutorial')
         }
-    
     })
     
     windows.extension.loadFile('./dist/extension.html')

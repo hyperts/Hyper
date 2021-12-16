@@ -66,6 +66,11 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         }
     })
 
+    ipcMain.on('refreshExtensionWindow', () => {
+        windows?.extension?.close()
+        createExtensionWindow(windows, false)
+    })
+
     ipcMain.on('closeExtensionWindow', () => {
         windows?.extension?.close()
     })

@@ -3,7 +3,7 @@ import ThemeRepository from '../shared/theme'
 
 export function loadWidgets() {
   const widgetController = new WidgetRepository()
-  widgetController.loadWidgetsInPaths(true)
+  widgetController.loadWidgetsInPaths()
   widgetController.watchWidgets()
   widgetController.loadStyles()
   return widgetController.loadedWidgets
