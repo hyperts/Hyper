@@ -74,11 +74,7 @@ app.on('ready', async ()=>{
     const widgetRepository = new WidgetRepository();
     widgetRepository.loadWidgetsInPaths()
     widgetRepository.loadedWidgets.forEach( widget => {
-        logger.debug(`Loaded: ${widget?.name}
-        --> Version: ${widget?.version}
-        --> Author: ${widget?.author ?? 'Unknown'}
-        --> Main? ${widget.main}
-        --> Renderer? ${widget.renderer}`)
+        logger.debug(`Extension/Widget loaded: ${widget?.name} v${widget?.version} by:${widget.author}`)
     })
     const themeRepository = new ThemeRepository();
     themeRepository.setVars()

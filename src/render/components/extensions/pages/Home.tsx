@@ -1,44 +1,34 @@
 import React, { useState } from 'react'
 import useFetch from "react-fetch-hook"
 import {Box, Feather} from 'react-feather'
-import PackageItem from '../PackageItem';
-// import WidgetRepository from '../../../../shared/widget'
+import PackageItem from '../PackageItem'
 
 
-// const widgetRepository = new WidgetRepository()
-// widgetRepository.loadWidgetsInPaths(true)
-
-// async function fetchPackageData(author: string, pkg: string) {
-//   const promise = new Promise(async (resolve: (data: WidgetInfo) => void, reject) => {
-
-//     try {
-//       const result = await axios.get(`https://raw.githubusercontent.com/${author}/${pkg}/master/package.json`)
-//       resolve(result.data as WidgetInfo)
-//     } catch (err) {
-//       reject(err)
-//     }
-
-//   })
-
-//   return promise
-// }
-
-
+type RepoItem = {
+  user: string,
+  package: string
+}
 type RepoData = {
-  [key: string] : {
-    user: string,
-    package: string
-  }[]
+  [key: string] : RepoItem[]
 }
 
 const Home = () => {
   const [repoType, setRepoType] = useState('widgets')
   //@ts-expect-error -- For real?
-  const { isLoading: isLoadingRepository, data: repositoryData }: {isLoading: boolean, data: RepoData} = useFetch('https://raw.githubusercontent.com/hyperts/hyperassets/master/communityrepository.json')
+  const { isLoading: isLoadingRepository, data: repositoryData, error }: {isLoading: boolean, data: RepoData} = useFetch('https://raw.githubusercontent.com/hyperts/hyperassets/master/communityrepository.json')
 
-  
+  // const [downloadProgress, setDownloadProgress] = useState()
+
   if (isLoadingRepository) {
     return <>Loading repository data</>
+  }
+
+  if (error){
+    return  <div className='h-full px-2 mx-2 my-2 overflow-auto text-white rounded-md bg-bg' id="contentwrapper">
+      <div className='flex items-center justify-center w-full h-8 px-3 py-6 mb-2 text-red-200 align-middle rounded-md bg-secondary'>
+        😔 Unable to reach hyper repositories: <span className='mx-3 text-white'>Check your internet connection</span>
+      </div>
+    </div>
   }
 
   return <>
@@ -63,26 +53,18 @@ const Home = () => {
     <div className='h-full px-2 mx-2 my-2 overflow-auto text-white rounded-md bg-bg' id="contentwrapper">
       {
         repositoryData[repoType].map( repo => {
-          return <PackageItem user={repo.user} pkg={repo.package} repoType={repoType} key={`${repo.package}.${repo.user}.item`}/>
+          return <PackageItem 
+          user={repo.user} 
+          pkg={repo.package} 
+          repoType={repoType} 
+          onDownload={()=>{
+          }}
+          key={`${repo.package}.${repo.user}.item`
+        }/>
         })
       }
     </div>
-    {/* {JSON.stringify(repositoryData[repoType])} */}
-    {/* { contentList.map( (pkgData: any) => {
-      return <WidgetItem 
-        name={pkgData.name}
-        description={pkgData.description}
-        image={pkgData.image}
-        installed={false}
-        author={pkgData.author}
-        version={pkgData.version}
-        install={()=>{
-          console.log("Installed")
-        }}
-        key={`${repoType}.${pkgData.name}.component`}
-      />
-    })} */}
   </>
-};
+}
 
-export default Home;
+export default Home

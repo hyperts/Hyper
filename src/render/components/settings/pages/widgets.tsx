@@ -13,7 +13,7 @@ interface WidgetPageProps {
 function Widgets(props: WidgetPageProps) {
     const [loading, setLoading] = useState(false)
     const DetectedWidgets = new WidgetRepository()
-    DetectedWidgets.loadWidgetsInPaths(true)
+    DetectedWidgets.loadWidgetsInPaths()
 
     // //@ts-ignore
     // const Glyph : ElementType = Icon[icon]
