@@ -5,6 +5,7 @@ import { Config } from './config';
 import chokidar from 'chokidar'
 import Zip from 'adm-zip';
 import log from 'electron-log'
+import { ipcRenderer } from 'electron';
 const logger = log.scope('WIDGET')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
@@ -80,7 +81,6 @@ class WidgetRepository {
             widgetInfo.default = widgetExecutor.default.bind( this.getWidgetContext() )
             widgetInfo.styles = widgetExecutor.styles
             this.loadedWidgets.push(widgetInfo);
-            
         } catch (err) {
             logger.error(`Failed loading [${widgetInfo.file}] - ${err}`);
         }
@@ -138,8 +138,8 @@ class WidgetRepository {
     }
 
 
-    loadWidgetsInPaths(isRenderer?: boolean) {
-        this.isRenderer = isRenderer ?? false
+    loadWidgetsInPaths() {
+        this.isRenderer = process && process.type === 'renderer'
         // TODO: Detect first run
         // TODO: Load default widgets from hyper repository
         
@@ -180,6 +180,20 @@ class WidgetRepository {
         zipFile.extractAllTo(this.widgetPaths[0], true)
         
         logger.debug(`Installed widget - ${JSON.parse(widgetData).name}`)
+
+        if (this.isRenderer) {
+            this.loadWidgetsInPaths()
+            this.watchWidgets()
+            this.loadStyles()
+            ipcRenderer.send('forceReload')
+        } else {
+            this.loadWidgetsInPaths()
+            this.watchWidgets()
+            this.loadedWidgets.forEach( widget =>{
+                widget.default()
+            })
+        }
+
         callback?.(JSON.parse(widgetData))
         
         return JSON.parse(widgetData)
