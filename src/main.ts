@@ -1,6 +1,6 @@
 import { app, protocol, dialog } from 'electron';
 import path, { dirname } from 'path';
-import WidgetRepository from './shared/widget';
+import WidgetRepository, { WidgetObject } from './shared/widget';
 import { Config } from './shared/config'
 import { homedir } from 'os';
 import { createWindows, createSplash } from './main/createwindows';
@@ -18,6 +18,8 @@ const mainLogger = log.scope('MAIN')
 log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 export const windows = {}
+let loadedWidgets: WidgetObject[] = []
+export let widgetReference: {[key: string]: WidgetObject} = {}
 
 
 if (!app.isPackaged) require('electron-reload')(__dirname, {
@@ -54,7 +56,25 @@ app.on('ready', async ()=>{
 
     protocol.registerFileProtocol('widgets', (request, callback) => {
         const url = request.url.substr(10)
-        callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${url}`) })
+        if (!loadedWidgets) {
+            logger.error(`Invalid attempt to access widget protocol - url:${url} | Widget not loaded`)
+            return
+        }
+        const searchRegExp = /\\/gi;
+        const replaceWith = '/';
+
+        const probableName = url.replace(searchRegExp, replaceWith).split('/')[0]
+        const entryMatch = widgetReference?.[probableName]
+
+        console.log("Found entrymatch:", probableName, entryMatch, widgetReference)
+        if (!entryMatch) {
+            logger.error(`Invalid attempt to access widget protocol - url:${url} | Widget not found in reference`)
+            return
+        }
+
+        const newURL = url.replace(probableName, entryMatch.directory)
+        console.log("NEW URL", newURL)
+        callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${newURL}`) })
     })    
     
     if (process.defaultApp) {
@@ -68,22 +88,22 @@ app.on('ready', async ()=>{
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
-    // We give widgets 2 seconds before showing the main window, this helps with image loading :D
-    // creators of weather and music widgets will appreciate this.
-    
+
     const widgetRepository = new WidgetRepository();
     widgetRepository.loadWidgetsInPaths()
-    widgetRepository.loadedWidgets.forEach( widget => {
-        logger.debug(`Extension/Widget loaded: ${widget?.name} v${widget?.version} by:${widget.author}`)
-    })
+
     const themeRepository = new ThemeRepository();
     themeRepository.setVars()
 
+    // Giving 2 seconds for any hanging rule in main.
     setTimeout(() => { 
         createWindows(windows) // Creates main app windows [Main, Settings]
         startIPC(windows) 
+        loadedWidgets = widgetRepository.loadedWidgets
         widgetRepository.loadedWidgets.forEach( widget =>{
+            widgetReference[widget.name] = widget
             widget.default()
+            logger.debug(`Extension/Widget loaded: ${widget?.name} v${widget?.version} by:${widget.author}`)
         })
         widgetRepository.watchWidgets()
     }, 2000);

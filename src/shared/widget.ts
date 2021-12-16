@@ -33,9 +33,10 @@ export type WidgetInfo = {
     version: string, 
     widgetPath?: string, 
     repository?: string
+    directory: string
     file: string
 }
-interface WidgetObject extends WidgetInfo {
+export interface WidgetObject extends WidgetInfo {
     default: () => void;
     styles?: string[];
 }
@@ -48,9 +49,11 @@ class WidgetRepository {
         this.isRenderer = false
     }
 
-    getWidgetContext() {
+    getWidgetContext(widgetInfo: WidgetInfo) {
         if (!this.isRenderer) {
             const electron = require('electron')
+            const directory = widgetInfo.file.split('\\widgets\\')
+           
             return {
                 config:  new Config(),
                 api: {
@@ -60,6 +63,7 @@ class WidgetRepository {
                     Menu: electron.Menu,
                     shell: electron.shell,
                     windows: require('../main').windows,
+                    directory: directory[directory.length -1].split('\\')[0]
                 }
             }
         } else {
@@ -78,7 +82,10 @@ class WidgetRepository {
     requireWidget(widgetInfo: WidgetObject) {
         try {
             const widgetExecutor = require(widgetInfo.file) as WidgetObject;
-            widgetInfo.default = widgetExecutor.default.bind( this.getWidgetContext() )
+            const directory = widgetInfo.file.split('\\widgets\\')
+            
+            widgetInfo.default = widgetExecutor.default.bind( this.getWidgetContext(widgetInfo),  )
+            widgetInfo.directory = directory[directory.length -1].split('\\')[0]
             widgetInfo.styles = widgetExecutor.styles
             this.loadedWidgets.push(widgetInfo);
         } catch (err) {
