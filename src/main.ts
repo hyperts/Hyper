@@ -19,7 +19,7 @@ log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 export const windows = {}
 let loadedWidgets: WidgetObject[] = []
-export let widgetReference: {[key: string]: WidgetObject} = {}
+export const widgetReference: {[key: string]: WidgetObject} = {}
 
 
 if (!app.isPackaged) require('electron-reload')(__dirname, {
@@ -66,14 +66,12 @@ app.on('ready', async ()=>{
         const probableName = url.replace(searchRegExp, replaceWith).split('/')[0]
         const entryMatch = widgetReference?.[probableName]
 
-        console.log("Found entrymatch:", probableName, entryMatch, widgetReference)
         if (!entryMatch) {
             logger.error(`Invalid attempt to access widget protocol - url:${url} | Widget not found in reference`)
             return
         }
 
         const newURL = url.replace(probableName, entryMatch.directory)
-        console.log("NEW URL", newURL)
         callback({ path: path.normalize(`${homedir()}/.hyperbar/widgets/${newURL}`) })
     })    
     
