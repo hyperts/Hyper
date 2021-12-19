@@ -4,10 +4,12 @@ import { readdirSync, existsSync, readFileSync, lstatSync, unlinkSync, rmdirSync
 import { Config } from './config';
 import chokidar from 'chokidar'
 import Zip from 'adm-zip';
-import log from 'electron-log'
+// import log from 'electron-log'
 import { ipcRenderer } from 'electron';
-const logger = log.scope('WIDGET')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
+import { Logger } from './logger';
+
+const logger = new Logger('WIDGET CONTROLLER')
+// log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 function rimraf(dir_path: string) {
     if (existsSync(dir_path)) {
@@ -63,8 +65,9 @@ class WidgetRepository {
                     Menu: electron.Menu,
                     shell: electron.shell,
                     windows: require('../main').windows,
-                    directory: directory[directory.length -1].split('\\')[0]
-                }
+                    directory: directory[directory.length -1].split('\\')[0],
+                },
+                logger: new Logger(`[MAIN] ${widgetInfo.name}`)
             }
         } else {
             const electron = require('electron')
@@ -73,7 +76,8 @@ class WidgetRepository {
                 config: new Config(),
                 api: {
                     ipcRenderer: electron.ipcRenderer,
-                }
+                },
+                logger: new Logger(`[RENDER] ${widgetInfo.name}`)
             }
 
         }
@@ -261,7 +265,7 @@ class WidgetRepository {
         })
 
         const watcher = chokidar.watch(watchList)
-        logger.info("Watching widget entries:", watchList.join(', ') )
+        logger.success("Watching widget entries:", watchList.length )
         
         const electron = require('electron');
 

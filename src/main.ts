@@ -3,20 +3,20 @@ import path, { dirname } from 'path';
 import WidgetRepository, { WidgetObject } from './shared/widget';
 import { Config } from './shared/config'
 import { homedir } from 'os';
-import { createWindows, createSplash } from './main/createwindows';
+import { createWindows, createSplash, createDebugWindow } from './main/createwindows';
 import startIPC from './main/ipc';
 
 import './main/checkdir';
 
-import log from 'electron-log'
-import {join} from 'path'
+// import log from 'electron-log'
+// import {join} from 'path'
 import ThemeRepository from './shared/theme';
-import {makeAppBar} from './main/utils'
+import {makeAppBar} from '../utils'
+import { Logger } from './shared/logger';
 
-const logger = log.scope('WIDGET')
-const mainLogger = log.scope('MAIN')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
-
+// const logger = log.scope('WIDGET')
+// const logg = log.scope('MAIN')
+// log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 export const windows = {}
 let loadedWidgets: WidgetObject[] = []
 export const widgetReference: {[key: string]: WidgetObject} = {}
@@ -36,13 +36,17 @@ if (!gotTheLock) {
   app.quit()
 }
 
+
+
+const logg = new Logger('MAIN')
+
+const loggWidget = new Logger('[MAIN] WIDGET')
+
 dialog.showErrorBox = (title, err) =>{
-    mainLogger.error(`Not managed exception in: ${title}\n      Error information:\n       ${err}`)
+    logg.error(`Not managed exception in: ${title}\n      Error information:\n       ${err}`)
 }
 
 app.on('ready', async ()=>{
-    await makeAppBar()
-
     protocol.registerFileProtocol('assets', (request, callback) => {
         const url = request.url.substr(9)
         callback({ path: path.normalize(`${__dirname}/assets/${url}`) })
@@ -57,7 +61,7 @@ app.on('ready', async ()=>{
     protocol.registerFileProtocol('widgets', (request, callback) => {
         const url = request.url.substr(10)
         if (!loadedWidgets) {
-            logger.error(`Invalid attempt to access widget protocol - url:${url} | Widget not loaded`)
+            loggWidget.error(`Invalid attempt to access widget protocol\n - url:${url}\n - Widget not loaded`)
             return
         }
         const searchRegExp = /\\/gi;
@@ -67,7 +71,7 @@ app.on('ready', async ()=>{
         const entryMatch = widgetReference?.[probableName]
 
         if (!entryMatch) {
-            logger.error(`Invalid attempt to access widget protocol - url:${url} | Widget not found in reference`)
+            loggWidget.error(`Invalid attempt to access widget protocol\n - url:${url}\n - Widget not found in reference`)
             return
         }
 
@@ -86,6 +90,9 @@ app.on('ready', async ()=>{
 
     createSplash(windows) // Loading the splashscreen before doing Sync procedures
 
+    if (new Config().getValue('general','misc', "console-window")) {
+        createDebugWindow(windows)
+    }
 
     const widgetRepository = new WidgetRepository();
     widgetRepository.loadWidgetsInPaths()
@@ -94,16 +101,17 @@ app.on('ready', async ()=>{
     themeRepository.setVars()
 
     // Giving 2 seconds for any hanging rule in main.
-    setTimeout(() => { 
+    setTimeout(async () => { 
+        await makeAppBar()
         createWindows(windows) // Creates main app windows [Main, Settings]
         startIPC(windows) 
         loadedWidgets = widgetRepository.loadedWidgets
         widgetRepository.loadedWidgets.forEach( widget =>{
             widgetReference[widget.name] = widget
             widget.default()
-            logger.debug(`Extension/Widget loaded: ${widget?.name} v${widget?.version} by:${widget.author}`)
+            loggWidget.debug(`Extension/Widget loaded: ${widget?.name} v${widget?.version} by:${widget.author}`)
         })
         widgetRepository.watchWidgets()
     }, 2000);
-    
+
 })

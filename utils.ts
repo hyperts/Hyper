@@ -4,8 +4,10 @@ import {homedir} from 'os'
 import {join, resolve} from 'path'
 import { execSync, execFile } from 'child_process'
 
-import { Config } from '../shared/config';
-const logger = log.scope('WINDOW')
+import { Config } from './src/shared/config';
+import { Logger } from './src/shared/logger';
+const logger = new Logger('WINDOW MANAGER')
+
 log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
 export function stringToHex(color: string){
@@ -18,7 +20,7 @@ export function generateBounds() {
 
     const { width, height } = screen.getPrimaryDisplay().workAreaSize
 
-    logger.log(`Detected Sreen Size: ${width}x${height}`)
+    logger.debug(`Detected Sreen Size: ${width}x${height}`)
 
     const dockedTop = configDock.get('dock-pos.value') == "top"
     const barHeight = Number(configSizes.get("height.value"))
@@ -64,14 +66,9 @@ export function makeAppBar() {
         setTimeout(()=>{
             const exeLocation = resolve(__dirname, 'bin', 'Hyper Spacer.exe')
             execFile(`${exeLocation}`, [String(reservedSpace + reservedMargin * 2),`${shouldDock ? dockPos == "top" ? 'Top' : 'Bottom' : 0}`]) // Change size or set to 0
-            logger.log("Space reserved!", String(reservedSpace + reservedMargin * 2),`${shouldDock ? dockPos == "top" ? 'Top' : 'Bottom' : 0}`)
+            logger.success("Space reserved!", String(reservedSpace + reservedMargin * 2),`${shouldDock ? dockPos == "top" ? 'Top' : 'Bottom' : 0}`)
             resolvePromise(true)
         }, 100)
-
-        setTimeout(()=>{ // It's hanging? start hyper without reserving spaces.
-            rejectPromise()
-            logger.error("Failed space reservation")
-        }, 5000)
     })
 
     return promise

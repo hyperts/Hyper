@@ -1,14 +1,11 @@
 import { app, BrowserWindow, shell } from "electron";
 import { Config } from '../shared/config';
-import { stringToHex, generateBounds, removeAppBar } from './utils';
+import { stringToHex, generateBounds, removeAppBar } from '../../utils';
 import ewc from 'ewc';
 
-import log from 'electron-log'
-import {homedir} from 'os'
-import {join} from 'path'
-const logger = log.scope('WINDOW')
-log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
+import { Logger } from "../shared/logger";
+const logger = new Logger('WINDOW MANAGER')
 
 export async function createWindows( windows: {[key: string]:BrowserWindow|null } ) {
 
@@ -31,7 +28,7 @@ export async function createWindows( windows: {[key: string]:BrowserWindow|null 
         skipTaskbar: true,
         focusable: true,
         fullscreenable: false,
-        show: false,
+        show: true,
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -67,9 +64,9 @@ export async function createWindows( windows: {[key: string]:BrowserWindow|null 
     });
 
     windows.main.on('ready-to-show', function(){
-        if (windows.main) {
-            windows.main.show()
-        }
+        // if (windows.main) {
+        //     windows.main.show()
+        // }
 
         if (windows.splash) {
             windows.splash.close() 
@@ -77,9 +74,11 @@ export async function createWindows( windows: {[key: string]:BrowserWindow|null 
         }
 
         logger.debug("Hyper loaded")
-        windows.main?.webContents.openDevTools({
-            mode: 'detach'
-        })
+        if (new Config().getValue('general','misc', "console-window")) {
+            windows.main?.webContents.openDevTools({
+                mode: 'detach'
+            })
+        }
     })
 
     
@@ -202,5 +201,33 @@ export function createExtensionWindow(windows: {[key:string]:BrowserWindow|null}
 
     windows.extension.on('ready-to-show', function(){
         logger.info('Extension window registered & Ready to show')
+    })
+}
+
+export function createDebugWindow(windows: {[key:string]:BrowserWindow|null}) {
+    if (!windows.console) {
+        windows.console = new BrowserWindow({
+            width: 1200,
+            height: 600,
+            show: true, 
+            frame: true,
+            autoHideMenuBar: true,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+            }
+        })
+    } else {
+        windows?.console.show()
+    }
+
+    windows.console.on('close', (e)=>{
+        delete windows.console
+      })
+    
+    windows.console.loadFile('./dist/console.html')
+
+    windows.console.on('ready-to-show', function(){
+        logger.info('Console / Debugger window ready to show')
     })
 }

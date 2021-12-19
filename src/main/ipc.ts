@@ -1,12 +1,13 @@
 import {app, BrowserWindow, ipcMain, screen, Menu} from 'electron'
-import { createSettingsWindow, createExtensionWindow } from './createwindows';
+import { createSettingsWindow, createExtensionWindow, createDebugWindow } from './createwindows';
 import { WebSocketServer } from 'ws'
 import {HSWWData} from '../@types/hyper'
 import log from 'electron-log'
 import {homedir} from 'os'
 import {join} from 'path'
 import {Config} from '../shared/config'
-const logger = log.scope("IPC")
+import { Logger } from '../shared/logger';
+const logger = new Logger('[MAIN] IPC')
 
 log.transports.file.resolvePath = () => join(homedir(), '.hyperlogs/main.log');
 
@@ -75,6 +76,15 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         windows?.extension?.close()
     })
     
+    ipcMain.on('openConsole', ()=>{
+        createDebugWindow(windows)
+    })
+
+        
+    ipcMain.on('h_logmessage', (e,data)=> {
+        windows?.console.webContents.send('h_logmessage', data)
+    })
+  
 
     ipcMain.on('closeSettings', () => {
         windows?.settings?.close()
@@ -131,12 +141,13 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
 
     ipcMain.on('show-context-menu', (event) => {
         // Create context menu on message
-        const template = [
-          { label: 'Restart Hyper', click: () => { ipcMain.emit('refreshApp') } },
-          { label: 'Close Hyper', click: () => { ipcMain.emit('closeApp') } },
+        let template = [
+          { label: 'Restart', click: () => { ipcMain.emit('refreshApp') } },
+          { label: 'Exit', click: () => { ipcMain.emit('closeApp') } },
+          { label: 'Debug Console', click:()=>{ipcMain.emit('openConsole')}},
           { type: 'separator' },
-          { label: 'Open Store', click: () =>{ ipcMain.emit('openExtensions', true) } },
-          { label: 'Open Settings', click: () => { ipcMain.emit('openSettings') } },
+          { label: 'Install Themes/Extensions', click: () =>{ ipcMain.emit('openExtensions', true) } },
+          { label: 'Settings', click: () => { ipcMain.emit('openSettings') } },
           { type: 'separator' },
           { label: 'Hyper - Beta release'}
         ]
@@ -144,9 +155,11 @@ function startIPC(windows: {[key: string]: BrowserWindow}) {
         const config = new Config()
         // If the user settings doesn't allow to display debug settings
         // then we just remove it from the array.
-        if (!config.getValue('general','misc', "context-menu")) {
+        if (!config.getValue('general', 'misc', "context-menu")) {
           delete template[0]
-          delete template[1]
+        //   delete template[1]
+          delete template[2]
+        //   delete template[3]
         }
         //@ts-expect-error
         const menu = Menu.buildFromTemplate(template)
