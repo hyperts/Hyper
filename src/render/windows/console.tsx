@@ -224,12 +224,12 @@ function App() {
           {/*@ts-expect-error This is internal tooling, i don't give a fuck.*/}
           <div className='flex flex-col w-full px-2 py-2 text-xs text-gray-400'>{selectedLine ? selectedLine.message.split('\n').map((str: string) => <p>{str}</p>) : '-'} </div>
         </div>
-        <div>
+        <div className='flex flex-col h-full overflow-hidden'>
           <span className='flex items-center px-2 py-1 text-sm text-gray-400 uppercase bg-secondary'>Stack</span>
           <div className='flex flex-col w-full overflow-x-hidden overflow-y-scroll text-xs text-gray-400'>{selectedLine 
           /*@ts-expect-error This is internal tooling, i don't give a fuck.*/
             ? selectedLine.stack.map(str=>{
-              return <span className='px-2 py-1 mb-2 bg-opacity-25 bg-primary'>{str}</span>
+              return <p className='px-2 py-1 mb-2 bg-opacity-25 bg-primary'>{str}</p>
             })
             : '-'
           } 
