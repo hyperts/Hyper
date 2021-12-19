@@ -258,14 +258,14 @@ class WidgetRepository {
             watchList.push(widget.file)
             if (widget.styles) {
                 widget.styles.forEach( style =>{
-                    const directory = widget.file.split('\\widgets\\')
-                    watchList.push(`${join(homedir(), "./.hyperbar/widgets", directory[directory.length -1].split('\\')[0], style)}`)
+                    logger.success(`Watching style: ${widget.name}/${style}`)
+                    watchList.push(`${join(homedir(), "./.hyperbar/widgets", widget.name, style)}`)
                 })
             }
         })
 
         const watcher = chokidar.watch(watchList)
-        logger.success("Watching widget entries:", watchList.length )
+        logger.info("Total widget entries being watched:", watchList.length )
         
         const electron = require('electron');
 
@@ -284,9 +284,7 @@ class WidgetRepository {
         this.loadedWidgets.map( widget =>{
             widget.styles?.forEach( style => {
                 const head = document.querySelector('head')
-                const directory = widget.file.split('\\widgets\\')
-
-                if (head) { head.innerHTML += `<link rel="stylesheet" href="widgets://${directory[directory.length -1].split('\\')[0]}/${style}" type="text/css"/>`; }
+                if (head) { head.innerHTML += `<link rel="stylesheet" href="widgets://${widget.name}/${style}" type="text/css"/>`; }
             })
         })
     }
