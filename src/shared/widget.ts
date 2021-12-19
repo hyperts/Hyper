@@ -259,7 +259,8 @@ class WidgetRepository {
             if (widget.styles) {
                 widget.styles.forEach( style =>{
                     logger.success(`Watching style: ${widget.name}/${style}`)
-                    watchList.push(`${join(homedir(), "./.hyperbar/widgets", widget.name, style)}`)
+                    const directory = widget.file.split('\\widgets\\')
+                    watchList.push(`${join(homedir(), "./.hyperbar/widgets", directory[directory.length -1].split('\\')[0], style)}`)
                 })
             }
         })
